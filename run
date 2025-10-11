@@ -1,0 +1,83 @@
+#!/bin/bash
+
+set -euo pipefail
+
+main() {
+    get_directory_of_this_app
+    source_environment_variables
+    source_app_config_if_exists
+    source_utility_functions
+    create_symlink_to_this_app
+    parse_arguments "$@"
+}
+
+get_directory_of_this_app() {
+    ROOT_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+}
+
+source_environment_variables() {
+    source "$ROOT_DIR/app/env"
+}
+
+source_app_config_if_exists() {
+    [ -r "$APP_CONFIG_FILE" ] && source "$APP_CONFIG_FILE" || true
+}
+
+source_utility_functions() {
+    for file in "$APP_UTILS_DIR"/*; do
+        [[ -r "$file" ]] && source "$file"
+    done
+}
+
+create_symlink_to_this_app() {
+    mkdir -p "$HOME/.local/bin"
+    ln -sf "$ROOT_DIR"/run "$HOME/.local/bin/$APP_NAME_LOWER"
+
+    if [[ "$PATH" != *"$HOME/.local/bin"* ]]; then
+        log_warning "Please add '$HOME/.local/bin' to your PATH."
+    fi
+}
+
+parse_arguments() {
+    if [[ $# -eq 0 ]]; then
+        show_usage
+        exit 0
+
+    else
+        case "$1" in
+            -h|--help)
+                show_usage
+                exit 0
+                ;;
+            -v|--version)
+                echo "$APP_VERSION"
+                exit 0
+                ;;
+            install)
+                source "$APP_DIR/install.sh" "$@"
+                ;;
+            remove)
+                source "$APP_DIR/remove.sh" "$@"
+                ;;
+            *)
+                log_error "Invalid command or option '$1'."
+                show_usage
+                exit 1
+                ;;
+        esac
+    fi
+}
+
+show_usage() {
+    echo "Usage: $APP_NAME_LOWER [COMMAND|OPTION]"
+    echo ""
+    echo "Commands:"
+    echo "    install           Install theme"
+    echo "    remove            Remove theme"
+    echo ""
+    echo "Options:"
+    echo "    -h, --help        Show help"
+    echo "    -v, --version     Show version"
+}
+
+main "$@"
