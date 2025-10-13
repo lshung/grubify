@@ -11,6 +11,7 @@ main() {
     generate_background_image || { log_failed "Failed to generate background image."; exit 1; }
     generate_selected_item_pixmap || { log_failed "Failed to generate selected item pixmap."; exit 1; }
     generate_menu_item_icons || { log_failed "Failed to generate menu item icons."; exit 1; }
+    substitute_variables_in_theme_txt || { log_failed "Failed to substitute variables in theme.txt."; exit 1; }
     copy_assets_to_theme_dir || { log_failed "Failed to copy assets to theme directory."; exit 1; }
     set_grub_theme || { log_failed "Failed to set GRUB theme."; exit 1; }
     update_grub_configuration || { log_failed "Failed to update GRUB configuration."; exit 1; }
@@ -161,13 +162,28 @@ generate_menu_item_icons() {
     done
 }
 
+substitute_variables_in_theme_txt() {
+    log_info "Substituting variables in file 'theme.txt'..."
+
+    cp "$APP_TEMPLATES_DIR/theme.txt" "$TEMP_DIR/theme.tmp"
+
+    export MENU_WIDTH MENU_HEIGHT MENU_LEFT MENU_TOP
+    export ITEM_COLOR SELECTED_ITEM_COLOR ITEM_HEIGHT ITEM_PADDING ITEM_SPACING
+    export ICON_SIZE ITEM_ICON_SPACE
+    export COUNTDOWN_TEXT COUNTDOWN_WIDTH COUNTDOWN_LEFT COUNTDOWN_TOP COUNTDOWN_ALIGN COUNTDOWN_COLOR
+    export PROGRESS_BAR_WIDTH PROGRESS_BAR_LEFT PROGRESS_BAR_TOP PROGRESS_BAR_HEIGHT
+    export PROGRESS_BAR_ALIGN PROGRESS_BAR_FOREGROUND_COLOR PROGRESS_BAR_BACKGROUND_COLOR PROGRESS_BAR_BORDER_COLOR
+
+    envsubst < "$TEMP_DIR/theme.tmp" > "$TEMP_DIR/theme.txt"
+}
+
 copy_assets_to_theme_dir() {
     log_info "Copying assets to theme directory..."
 
     [[ -d "$GRUB_THEME_DIR" ]] && sudo rm -rf "$GRUB_THEME_DIR" || true
     sudo mkdir -p "$GRUB_THEME_DIR"
 
-    sudo cp "$APP_TEMPLATES_DIR/theme.txt" "$GRUB_THEME_DIR"/
+    sudo cp "$TEMP_DIR/theme.txt" "$GRUB_THEME_DIR"/
     sudo cp "$TEMP_DIR/background.png" "$GRUB_THEME_DIR"/
     sudo cp "$TEMP_DIR"/select_*.png "$GRUB_THEME_DIR"/
     sudo cp -r "$TEMP_DIR/icons" "$GRUB_THEME_DIR"/

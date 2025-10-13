@@ -28,13 +28,13 @@ LOG_TIMESTAMP_INCLUDED="no"
 ####################################################################
 
 # Theme colors
-THEME_BACKGROUND_COLOR="#313244"
-THEME_TEXT_COLOR="#cdd6f4"
-THEME_ACCENT_COLOR="#fab387"
+THEME_BACKGROUND_COLOR="#313244"    # Reference color for background
+THEME_TEXT_COLOR="#cdd6f4"          # Reference color for text
+THEME_ACCENT_COLOR="#fab387"        # Reference color for accent (highlight)
 
 # Screen
-SCREEN_WIDTH=1920
-SCREEN_HEIGHT=1080
+SCREEN_WIDTH=1920       # Width of screen in pixels
+SCREEN_HEIGHT=1080      # Height of screen in pixels
 
 # Background
 BACKGROUND_TYPE="file"          # Accepted values: 'file' or 'solid'
@@ -52,3 +52,38 @@ CONTAINER_BLUR_SIGMA=30                     # Strength of the blur effect. Only 
 CONTAINER_BLUR_BRIGHTNESS=0                 # Brightness of container after blur. Only used if CONTAINER_TYPE is 'blur'
 CONTAINER_BLUR_CONTRAST=1                   # Contrast of container after blur. Only used if CONTAINER_TYPE is 'blur'
 CONTAINER_COLOR="$THEME_BACKGROUND_COLOR"   # Solid color of container. Only used if CONTAINER_TYPE is 'solid'
+
+# Menu
+MENU_WIDTH=30%      # Width of menu in percentage or pixels
+MENU_HEIGHT=30%     # Height of menu in percentage or pixels
+MENU_LEFT=35%       # Left position of menu in percentage or pixels
+MENU_TOP=35%        # Top position of menu in percentage or pixels
+
+# Menu items
+ITEM_COLOR="$THEME_TEXT_COLOR"                  # Text color of items
+SELECTED_ITEM_COLOR="$THEME_BACKGROUND_COLOR"   # Text color of selected (focused) item
+ITEM_HEIGHT=40      # Height of item in pixels
+ITEM_PADDING=0      # Padding of menu item contents in pixels
+ITEM_SPACING=10     # Spacing between items in pixels
+
+# Icon
+ICON_SIZE=32            # Size of icon in pixels (height and width)
+ITEM_ICON_SPACE=15      # Space between icon and title text in pixels
+
+# Countdown
+COUNTDOWN_TEXT="Auto-boot in %d seconds"    # Content of countdown label
+COUNTDOWN_WIDTH=30%                         # Width of countdown label in percentage or pixels
+COUNTDOWN_LEFT=35%                          # Left position of countdown label in percentage or pixels
+COUNTDOWN_TOP=85%                           # Top position of countdown label in percentage or pixels
+COUNTDOWN_ALIGN="center"                    # Alignment of countdown label
+COUNTDOWN_COLOR="$THEME_TEXT_COLOR"         # Text color of countdown label
+
+# Progress bar
+PROGRESS_BAR_WIDTH=30%          # Width of progress bar in percentage or pixels
+PROGRESS_BAR_LEFT=35%           # Left position of progress bar in percentage or pixels
+PROGRESS_BAR_TOP=90%            # Top position of progress bar in percentage or pixels
+PROGRESS_BAR_HEIGHT=6           # Height of progress bar in pixels
+PROGRESS_BAR_ALIGN="center"     # Alignment of progress bar
+PROGRESS_BAR_FOREGROUND_COLOR="$THEME_ACCENT_COLOR"         # Foreground color of progress bar
+PROGRESS_BAR_BACKGROUND_COLOR="$THEME_BACKGROUND_COLOR"     # Background color of progress bar
+PROGRESS_BAR_BORDER_COLOR="$THEME_BACKGROUND_COLOR"         # Border color of progress bar

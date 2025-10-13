@@ -6,45 +6,45 @@ terminal-height: "100%"
 terminal-border: "0"
 
 + boot_menu {
-  left = 35%
-  top = 35%
-  width = 30%
-  height = 30%
+  width = $MENU_WIDTH
+  height = $MENU_HEIGHT
+  left = $MENU_LEFT
+  top = $MENU_TOP
 
   item_font = "DejaVu Sans 16"
-  item_color = "#cdd6f4"
-  item_height = 40
-  item_padding = 5
-  item_spacing = 10
+  item_color = "$ITEM_COLOR"
+  item_height = $ITEM_HEIGHT
+  item_padding = $ITEM_PADDING
+  item_spacing = $ITEM_SPACING
 
-  icon_width = 32
-  icon_height = 32
-  item_icon_space = 15
+  icon_width = $ICON_SIZE
+  icon_height = $ICON_SIZE
+  item_icon_space = $ITEM_ICON_SPACE
 
   selected_item_font = "DejaVu Sans Bold 16"
-  selected_item_color = "#313244"
+  selected_item_color = "$SELECTED_ITEM_COLOR"
   selected_item_pixmap_style = "select_*.png"
 }
 
 + label {
   id = "__timeout__"
-  text = "Auto-boot in %d seconds"
-  left = 35%
-  top = 85%
-  width = 30%
-  align = "center"
-  color = "#cdd6f4"
+  text = "$COUNTDOWN_TEXT"
+  width = $COUNTDOWN_WIDTH
+  left = $COUNTDOWN_LEFT
+  top = $COUNTDOWN_TOP
+  align = "$COUNTDOWN_ALIGN"
+  color = "$COUNTDOWN_COLOR"
   font = "DejaVu Sans 16"
 }
 
 + progress_bar {
   id = "__timeout__"
-  left = 35%
-  top = 90%
-  align = "center"
-  width = 30%
-  height = 6
-  fg_color = "#fab387"
-  bg_color = "#313244"
-  border_color = "#313244"
+  width = $PROGRESS_BAR_WIDTH
+  left = $PROGRESS_BAR_LEFT
+  top = $PROGRESS_BAR_TOP
+  height = $PROGRESS_BAR_HEIGHT
+  align = "$PROGRESS_BAR_ALIGN"
+  fg_color = "$PROGRESS_BAR_FOREGROUND_COLOR"
+  bg_color = "$PROGRESS_BAR_BACKGROUND_COLOR"
+  border_color = "$PROGRESS_BAR_BACKGROUND_COLOR"
 }
