@@ -27,6 +27,11 @@ LOG_TIMESTAMP_INCLUDED="no"
 # THEME SETTINGS                                                   #
 ####################################################################
 
+# Theme colors
+THEME_BACKGROUND_COLOR="#313244"
+THEME_TEXT_COLOR="#cdd6f4"
+THEME_ACCENT_COLOR="#fab387"
+
 # Screen
 SCREEN_WIDTH=1920
 SCREEN_HEIGHT=1080
@@ -37,4 +42,13 @@ BACKGROUND_FILE=""              # Only used if BACKGROUND_TYPE is 'file'
 BACKGROUND_COLOR="#000000"      # Only used if BACKGROUND_TYPE is 'solid'
 
 # Container
-CONTAINER_TYPE="blur"       # blur|solid
+CONTAINER_WIDTH=40%                         # Width of container in percentage or pixels
+CONTAINER_HEIGHT=40%                        # Height of container in percentage or pixels
+CONTAINER_LEFT=30%                          # Left position of container in percentage or pixels
+CONTAINER_TOP=30%                           # Top position of container in percentage or pixels
+CONTAINER_BORDER_RADIUS=50                  # Border radius of container in pixels
+CONTAINER_TYPE="blur"                       # Accepted values: 'blur' or 'solid'
+CONTAINER_BLUR_SIGMA=30                     # Strength of the blur effect. Only used if CONTAINER_TYPE is 'blur'
+CONTAINER_BLUR_BRIGHTNESS=0                 # Brightness of container after blur. Only used if CONTAINER_TYPE is 'blur'
+CONTAINER_BLUR_CONTRAST=1                   # Contrast of container after blur. Only used if CONTAINER_TYPE is 'blur'
+CONTAINER_COLOR="$THEME_BACKGROUND_COLOR"   # Solid color of container. Only used if CONTAINER_TYPE is 'solid'
