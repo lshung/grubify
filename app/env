@@ -23,6 +23,18 @@ TEMP_DIR="/tmp/$APP_NAME_LOWER"
 # Log
 LOG_TIMESTAMP_INCLUDED="no"
 
-# Theme settings
-BACKGROUND_IMAGE_FILE=""
+####################################################################
+# THEME SETTINGS                                                   #
+####################################################################
+
+# Screen
+SCREEN_WIDTH=1920
+SCREEN_HEIGHT=1080
+
+# Background
+BACKGROUND_TYPE="file"          # Accepted values: 'file' or 'solid'
+BACKGROUND_FILE=""              # Only used if BACKGROUND_TYPE is 'file'
+BACKGROUND_COLOR="#000000"      # Only used if BACKGROUND_TYPE is 'solid'
+
+# Container
 CONTAINER_TYPE="blur"       # blur|solid

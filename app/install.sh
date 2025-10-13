@@ -42,8 +42,12 @@ clean_temporary_directory() {
 generate_background_image() {
     log_info "Generating background image..."
 
-    if ! scale_image_to_fit_screen "$BACKGROUND_IMAGE_FILE" "$TEMP_DIR/cropped-background.png" 1920 1080; then
-        log_error "Failed to scale image to fit screen."
+    if [[ "$BACKGROUND_TYPE" == "file" ]]; then
+        fit_background_image_to_screen || return 1
+    elif [[ "$BACKGROUND_TYPE" == "solid" ]]; then
+        create_solid_color_background || return 1
+    else
+        log_error "Invalid background type '$BACKGROUND_TYPE'."
         return 1
     fi
 
@@ -71,14 +75,28 @@ generate_background_image() {
         return 1
     fi
 
-    if ! overlay_image "$TEMP_DIR/cropped-background.png" "$TEMP_DIR/container.png" "$TEMP_DIR/background.png" 576 324; then
+    if ! overlay_image "$TEMP_DIR/background.png" "$TEMP_DIR/container.png" "$TEMP_DIR/background.png" 576 324; then
         log_error "Failed to overlay container on background image."
         return 1
     fi
 }
 
+fit_background_image_to_screen() {
+    if ! scale_image_to_fit_screen "$BACKGROUND_FILE" "$TEMP_DIR/background.png" "$SCREEN_WIDTH" "$SCREEN_HEIGHT"; then
+        log_error "Failed to scale image to fit screen."
+        return 1
+    fi
+}
+
+create_solid_color_background() {
+    if ! create_solid_color_image "$TEMP_DIR/background.png" "$BACKGROUND_COLOR" "$SCREEN_WIDTH" "$SCREEN_HEIGHT"; then
+        log_error "Failed to create solid color image for background."
+        return 1
+    fi
+}
+
 create_container_blurred_image() {
-    if ! crop_image "$TEMP_DIR/cropped-background.png" "$TEMP_DIR/container.png" "iw*0.4" "ih*0.4" "iw*0.3" "ih*0.3"; then
+    if ! crop_image "$TEMP_DIR/background.png" "$TEMP_DIR/container.png" "iw*0.4" "ih*0.4" "iw*0.3" "ih*0.3"; then
         log_error "Failed to crop image to create container."
         return 1
     fi
