@@ -22,3 +22,7 @@ TEMP_DIR="/tmp/$APP_NAME_LOWER"
 
 # Log
 LOG_TIMESTAMP_INCLUDED="no"
+
+# Theme settings
+BACKGROUND_IMAGE_FILE=""
+CONTAINER_TYPE="blur"       # blur|solid
