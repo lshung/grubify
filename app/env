@@ -42,16 +42,16 @@ BACKGROUND_FILE=""              # Only used if BACKGROUND_TYPE is 'file'
 BACKGROUND_COLOR="#000000"      # Only used if BACKGROUND_TYPE is 'solid'
 
 # Container
-CONTAINER_WIDTH=40%                         # Width of container in percentage or pixels
-CONTAINER_HEIGHT=40%                        # Height of container in percentage or pixels
-CONTAINER_LEFT=30%                          # Left position of container in percentage or pixels
-CONTAINER_TOP=30%                           # Top position of container in percentage or pixels
-CONTAINER_BORDER_RADIUS=50                  # Border radius of container in pixels
-CONTAINER_TYPE="blur"                       # Accepted values: 'blur' or 'solid'
-CONTAINER_BLUR_SIGMA=30                     # Strength of the blur effect. Only used if CONTAINER_TYPE is 'blur'
-CONTAINER_BLUR_BRIGHTNESS=0                 # Brightness of container after blur. Only used if CONTAINER_TYPE is 'blur'
-CONTAINER_BLUR_CONTRAST=1                   # Contrast of container after blur. Only used if CONTAINER_TYPE is 'blur'
-CONTAINER_COLOR="$THEME_BACKGROUND_COLOR"   # Solid color of container. Only used if CONTAINER_TYPE is 'solid'
+CONTAINER_WIDTH=40%             # Width of container in percentage or pixels
+CONTAINER_HEIGHT=40%            # Height of container in percentage or pixels
+CONTAINER_LEFT=30%              # Left position of container in percentage or pixels
+CONTAINER_TOP=30%               # Top position of container in percentage or pixels
+CONTAINER_BORDER_RADIUS=50      # Border radius of container in pixels
+CONTAINER_TYPE="blur"           # Accepted values: 'blur' or 'solid'
+CONTAINER_BLUR_SIGMA=30         # Strength of the blur effect. Only used if CONTAINER_TYPE is 'blur'
+CONTAINER_BLUR_BRIGHTNESS=0     # Brightness of container after blur. Only used if CONTAINER_TYPE is 'blur'
+CONTAINER_BLUR_CONTRAST=1       # Contrast of container after blur. Only used if CONTAINER_TYPE is 'blur'
+CONTAINER_COLOR=""              # Solid color of container (leave empty to use THEME_BACKGROUND_COLOR). Only used if CONTAINER_TYPE is 'solid'
 
 # Terminal
 TERMINAL_FONT_NAME="Terminus Regular"       # Accepted values: 'Terminus Regular', 'Terminus Bold', or 'Unifont Regular'
@@ -64,17 +64,19 @@ MENU_LEFT=35%       # Left position of menu in percentage or pixels
 MENU_TOP=35%        # Top position of menu in percentage or pixels
 
 # Menu items
-ITEM_FONT_NAME="Unifont Regular"                # Accepted values: 'Terminus Regular', 'Terminus Bold', or 'Unifont Regular'
-ITEM_FONT_SIZE=16                               # 12|14|16|18|20|22|24|28|32 for Terminus and 16|18|20|22|24|26|28|30|32 for Unifont
-ITEM_COLOR="$THEME_TEXT_COLOR"                  # Text color of items
-SELECTED_ITEM_FONT_NAME="Unifont Regular"       # Accepted values: 'Terminus Regular', 'Terminus Bold', or 'Unifont Regular'
-SELECTED_ITEM_FONT_SIZE=16                      # 12|14|16|18|20|22|24|28|32 for Terminus and 16|18|20|22|24|26|28|30|32 for Unifont
-SELECTED_ITEM_COLOR="$THEME_BACKGROUND_COLOR"   # Text color of selected (focused) item
+ITEM_FONT_NAME="Unifont Regular"            # Accepted values: 'Terminus Regular', 'Terminus Bold', or 'Unifont Regular'
+ITEM_FONT_SIZE=16                           # 12|14|16|18|20|22|24|28|32 for Terminus and 16|18|20|22|24|26|28|30|32 for Unifont
+ITEM_COLOR=""                               # Text color of items (leave empty to use THEME_TEXT_COLOR)
+SELECTED_ITEM_FONT_NAME="Unifont Regular"   # Accepted values: 'Terminus Regular', 'Terminus Bold', or 'Unifont Regular'
+SELECTED_ITEM_FONT_SIZE=16                  # 12|14|16|18|20|22|24|28|32 for Terminus and 16|18|20|22|24|26|28|30|32 for Unifont
+SELECTED_ITEM_COLOR=""                      # Text color of selected (focused) item (leave empty to use THEME_BACKGROUND_COLOR)
+SELECTED_ITEM_BACKGROUND_COLOR=""           # Background color of selected (focused) item (leave empty to use THEME_ACCENT_COLOR)
 ITEM_HEIGHT=40      # Height of item in pixels
 ITEM_PADDING=0      # Padding of menu item contents in pixels
 ITEM_SPACING=10     # Spacing between items in pixels
 
 # Icon
+ICON_THEME="papirus"    # Accepted values: 'papirus' or 'tela-circle'
 ICON_SIZE=32            # Size of icon in pixels (height and width)
 ITEM_ICON_SPACE=15      # Space between icon and title text in pixels
 
@@ -86,7 +88,7 @@ COUNTDOWN_WIDTH=30%                         # Width of countdown label in percen
 COUNTDOWN_LEFT=35%                          # Left position of countdown label in percentage or pixels
 COUNTDOWN_TOP=85%                           # Top position of countdown label in percentage or pixels
 COUNTDOWN_ALIGN="center"                    # Alignment of countdown label
-COUNTDOWN_COLOR="$THEME_TEXT_COLOR"         # Text color of countdown label
+COUNTDOWN_COLOR=""                          # Text color of countdown label (leave empty to use THEME_TEXT_COLOR)
 
 # Progress bar
 PROGRESS_BAR_WIDTH=30%          # Width of progress bar in percentage or pixels
@@ -94,6 +96,6 @@ PROGRESS_BAR_LEFT=35%           # Left position of progress bar in percentage or
 PROGRESS_BAR_TOP=90%            # Top position of progress bar in percentage or pixels
 PROGRESS_BAR_HEIGHT=6           # Height of progress bar in pixels
 PROGRESS_BAR_ALIGN="center"     # Alignment of progress bar
-PROGRESS_BAR_FOREGROUND_COLOR="$THEME_ACCENT_COLOR"         # Foreground color of progress bar
-PROGRESS_BAR_BACKGROUND_COLOR="$THEME_BACKGROUND_COLOR"     # Background color of progress bar
-PROGRESS_BAR_BORDER_COLOR="$THEME_BACKGROUND_COLOR"         # Border color of progress bar
+PROGRESS_BAR_FOREGROUND_COLOR=""    # Foreground color of progress bar (leave empty to use THEME_ACCENT_COLOR)
+PROGRESS_BAR_BACKGROUND_COLOR=""    # Background color of progress bar (leave empty to use THEME_BACKGROUND_COLOR)
+PROGRESS_BAR_BORDER_COLOR=""        # Border color of progress bar (leave empty to use THEME_BACKGROUND_COLOR)

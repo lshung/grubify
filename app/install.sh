@@ -32,6 +32,16 @@ declare_variables() {
     fi
 
     GRUB_THEME_DIR="$GRUB_THEMES_DIR/$APP_NAME_LOWER"
+
+    # Colors
+    [ -z "$CONTAINER_COLOR" ] && CONTAINER_COLOR="$THEME_BACKGROUND_COLOR" || true
+    [ -z "$ITEM_COLOR" ] && ITEM_COLOR="$THEME_TEXT_COLOR" || true
+    [ -z "$SELECTED_ITEM_COLOR" ] && SELECTED_ITEM_COLOR="$THEME_BACKGROUND_COLOR" || true
+    [ -z "$SELECTED_ITEM_BACKGROUND_COLOR" ] && SELECTED_ITEM_BACKGROUND_COLOR="$THEME_ACCENT_COLOR" || true
+    [ -z "$COUNTDOWN_COLOR" ] && COUNTDOWN_COLOR="$THEME_TEXT_COLOR" || true
+    [ -z "$PROGRESS_BAR_FOREGROUND_COLOR" ] && PROGRESS_BAR_FOREGROUND_COLOR="$THEME_ACCENT_COLOR" || true
+    [ -z "$PROGRESS_BAR_BACKGROUND_COLOR" ] && PROGRESS_BAR_BACKGROUND_COLOR="$THEME_BACKGROUND_COLOR" || true
+    [ -z "$PROGRESS_BAR_BORDER_COLOR" ] && PROGRESS_BAR_BORDER_COLOR="$THEME_BACKGROUND_COLOR" || true
 }
 
 clean_temporary_directory() {
@@ -151,16 +161,19 @@ create_border_radius_for_container() {
 generate_selected_item_pixmap() {
     log_info "Generating selected item pixmap..."
 
-    scale_image_with_values "$APP_TEMPLATES_SELECT_DIR/select_c.svg" "$TEMP_DIR/select_c.png" -1 40
-    scale_image_with_values "$APP_TEMPLATES_SELECT_DIR/select_w.svg" "$TEMP_DIR/select_w.png" -1 40
-    scale_image_with_values "$APP_TEMPLATES_SELECT_DIR/select_e.svg" "$TEMP_DIR/select_e.png" -1 40
+    cp "$APP_TEMPLATES_SELECT_DIR"/select_*.svg "$TEMP_DIR"/ || return 1
+
+    for file_name in "select_c" "select_w" "select_e"; do
+        sed -i "s/fill=\".*\"/fill=\"$SELECTED_ITEM_BACKGROUND_COLOR\"/g" "$TEMP_DIR/$file_name.svg" || return 1
+        scale_image_with_values "$TEMP_DIR/$file_name.svg" "$TEMP_DIR/$file_name.png" -1 "$ITEM_HEIGHT" || return 1
+    done
 }
 
 generate_menu_item_icons() {
     log_info "Generating menu item icons..."
 
-    for file in "$APP_TEMPLATES_ICONS_DIR"/tela-circle/*.svg; do
-        export_menu_item_icon "$file" "$TEMP_DIR/icons/$(basename "$file" .svg).png" -1 32
+    for file in "$APP_TEMPLATES_ICONS_DIR/$ICON_THEME"/*.svg; do
+        export_menu_item_icon "$file" "$TEMP_DIR/icons/$(basename "$file" .svg).png" -1 "$ICON_SIZE" || return 1
     done
 }
 
