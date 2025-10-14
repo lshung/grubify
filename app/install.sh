@@ -8,6 +8,7 @@ main() {
     declare_variables || { log_failed "Failed to declare variables."; exit 1; }
     clean_temporary_directory || { log_failed "Failed to clean temporary directory."; exit 1; }
     parse_config_values || { log_failed "Failed to parse config values."; exit 1; }
+    download_background_image_if_not_set || { log_failed "Failed to download background image."; exit 1; }
     generate_background_image || { log_failed "Failed to generate background image."; exit 1; }
     generate_selected_item_pixmap || { log_failed "Failed to generate selected item pixmap."; exit 1; }
     generate_menu_item_icons || { log_failed "Failed to generate menu item icons."; exit 1; }
@@ -74,6 +75,17 @@ parse_config_values() {
     PARSED_CONTAINER_LEFT="$CONTAINER_LEFT"
     if [[ "$CONTAINER_LEFT" =~ ^[0-9]+%$ ]]; then
         PARSED_CONTAINER_LEFT="$(( $SCREEN_WIDTH * ${CONTAINER_LEFT%\%} / 100 ))"
+    fi
+}
+
+download_background_image_if_not_set() {
+    log_info "Downloading background image if not set..."
+
+    if [[ "$BACKGROUND_TYPE" == "file" && -z "$BACKGROUND_FILE" ]]; then
+        local url="https://raw.githubusercontent.com/lshung/grubify-assets/master/background.jpg"
+
+        BACKGROUND_FILE="$TEMP_DIR/background.jpg"
+        curl -s -L -o "$BACKGROUND_FILE" "$url" || return 1
     fi
 }
 
