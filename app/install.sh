@@ -11,6 +11,7 @@ main() {
     generate_background_image || { log_failed "Failed to generate background image."; exit 1; }
     generate_selected_item_pixmap || { log_failed "Failed to generate selected item pixmap."; exit 1; }
     generate_menu_item_icons || { log_failed "Failed to generate menu item icons."; exit 1; }
+    download_and_convert_fonts || { log_failed "Failed to download and convert fonts."; exit 1; }
     substitute_variables_in_theme_txt || { log_failed "Failed to substitute variables in theme.txt."; exit 1; }
     copy_assets_to_theme_dir || { log_failed "Failed to copy assets to theme directory."; exit 1; }
     set_grub_theme || { log_failed "Failed to set GRUB theme."; exit 1; }
@@ -39,6 +40,7 @@ clean_temporary_directory() {
     rm -rf "$TEMP_DIR"/{*,.[!.]*}
     mkdir -p "$TEMP_DIR"
     mkdir -p "$TEMP_DIR/icons"
+    mkdir -p "$TEMP_DIR/fonts"
 }
 
 parse_config_values() {
@@ -162,15 +164,27 @@ generate_menu_item_icons() {
     done
 }
 
+download_and_convert_fonts() {
+    log_info "Downloading and converting fonts..."
+
+    download_font "unifont"
+    download_font "terminus"
+    convert_font_to_pf2_format "unifont"
+    convert_font_to_pf2_format "terminus"
+}
+
 substitute_variables_in_theme_txt() {
     log_info "Substituting variables in file 'theme.txt'..."
 
     cp "$APP_TEMPLATES_DIR/theme.txt" "$TEMP_DIR/theme.tmp"
 
+    export TERMINAL_FONT_NAME TERMINAL_FONT_SIZE
     export MENU_WIDTH MENU_HEIGHT MENU_LEFT MENU_TOP
     export ITEM_COLOR SELECTED_ITEM_COLOR ITEM_HEIGHT ITEM_PADDING ITEM_SPACING
+    export ITEM_FONT_NAME ITEM_FONT_SIZE SELECTED_ITEM_FONT_NAME SELECTED_ITEM_FONT_SIZE
     export ICON_SIZE ITEM_ICON_SPACE
-    export COUNTDOWN_TEXT COUNTDOWN_WIDTH COUNTDOWN_LEFT COUNTDOWN_TOP COUNTDOWN_ALIGN COUNTDOWN_COLOR
+    export COUNTDOWN_FONT_NAME COUNTDOWN_FONT_SIZE COUNTDOWN_TEXT COUNTDOWN_WIDTH
+    export COUNTDOWN_LEFT COUNTDOWN_TOP COUNTDOWN_ALIGN COUNTDOWN_COLOR
     export PROGRESS_BAR_WIDTH PROGRESS_BAR_LEFT PROGRESS_BAR_TOP PROGRESS_BAR_HEIGHT
     export PROGRESS_BAR_ALIGN PROGRESS_BAR_FOREGROUND_COLOR PROGRESS_BAR_BACKGROUND_COLOR PROGRESS_BAR_BORDER_COLOR
 
@@ -187,6 +201,7 @@ copy_assets_to_theme_dir() {
     sudo cp "$TEMP_DIR/background.png" "$GRUB_THEME_DIR"/
     sudo cp "$TEMP_DIR"/select_*.png "$GRUB_THEME_DIR"/
     sudo cp -r "$TEMP_DIR/icons" "$GRUB_THEME_DIR"/
+    sudo cp "$TEMP_DIR/fonts"/*.pf2 "$GRUB_THEME_DIR"/ || true
 }
 
 set_grub_theme() {

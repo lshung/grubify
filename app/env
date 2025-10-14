@@ -53,6 +53,10 @@ CONTAINER_BLUR_BRIGHTNESS=0                 # Brightness of container after blur
 CONTAINER_BLUR_CONTRAST=1                   # Contrast of container after blur. Only used if CONTAINER_TYPE is 'blur'
 CONTAINER_COLOR="$THEME_BACKGROUND_COLOR"   # Solid color of container. Only used if CONTAINER_TYPE is 'solid'
 
+# Terminal
+TERMINAL_FONT_NAME="Terminus Regular"       # Accepted values: 'Terminus Regular', 'Terminus Bold', or 'Unifont Regular'
+TERMINAL_FONT_SIZE=14                       # 12|14|16|18|20|22|24|28|32 for Terminus and 16|18|20|22|24|26|28|30|32 for Unifont
+
 # Menu
 MENU_WIDTH=30%      # Width of menu in percentage or pixels
 MENU_HEIGHT=30%     # Height of menu in percentage or pixels
@@ -60,7 +64,11 @@ MENU_LEFT=35%       # Left position of menu in percentage or pixels
 MENU_TOP=35%        # Top position of menu in percentage or pixels
 
 # Menu items
+ITEM_FONT_NAME="Unifont Regular"                # Accepted values: 'Terminus Regular', 'Terminus Bold', or 'Unifont Regular'
+ITEM_FONT_SIZE=16                               # 12|14|16|18|20|22|24|28|32 for Terminus and 16|18|20|22|24|26|28|30|32 for Unifont
 ITEM_COLOR="$THEME_TEXT_COLOR"                  # Text color of items
+SELECTED_ITEM_FONT_NAME="Unifont Regular"       # Accepted values: 'Terminus Regular', 'Terminus Bold', or 'Unifont Regular'
+SELECTED_ITEM_FONT_SIZE=16                      # 12|14|16|18|20|22|24|28|32 for Terminus and 16|18|20|22|24|26|28|30|32 for Unifont
 SELECTED_ITEM_COLOR="$THEME_BACKGROUND_COLOR"   # Text color of selected (focused) item
 ITEM_HEIGHT=40      # Height of item in pixels
 ITEM_PADDING=0      # Padding of menu item contents in pixels
@@ -71,6 +79,8 @@ ICON_SIZE=32            # Size of icon in pixels (height and width)
 ITEM_ICON_SPACE=15      # Space between icon and title text in pixels
 
 # Countdown
+COUNTDOWN_FONT_NAME="Unifont Regular"       # Accepted values: 'Terminus Regular', 'Terminus Bold', or 'Unifont Regular'
+COUNTDOWN_FONT_SIZE=16                      # 12|14|16|18|20|22|24|28|32 for Terminus and 16|18|20|22|24|26|28|30|32 for Unifont
 COUNTDOWN_TEXT="Auto-boot in %d seconds"    # Content of countdown label
 COUNTDOWN_WIDTH=30%                         # Width of countdown label in percentage or pixels
 COUNTDOWN_LEFT=35%                          # Left position of countdown label in percentage or pixels
