@@ -138,6 +138,7 @@ scale_image_to_fit_screen() {
     local output_file="$2"
     local screen_width="$3"
     local screen_height="$4"
+    local temporary_file="$(generate_random_temporary_file)"
 
     # Get original dimensions
     local original_width="$(get_image_dimensions "$input_file" "width")"
@@ -148,21 +149,19 @@ scale_image_to_fit_screen() {
     local target_ratio=$(echo "scale=10; $screen_width / $screen_height" | bc)
 
     if (( $(echo "$original_ratio > $target_ratio" | bc -l) )); then
-        # Original is wider than target - scale by height, then crop width
-        local scale_factor=$(echo "scale=10; $screen_height / $original_height" | bc)
-        local scaled_width=$(echo "scale=0; $original_width * $scale_factor / 1" | bc)
-        local crop_x=$(echo "scale=0; ($scaled_width - $screen_width) / 2" | bc)
+        # Original is wider than target, so scale by height, then crop width
+        scale_image_with_values "$input_file" "$temporary_file" -1 "$screen_height"
+        local scaled_width="$(get_image_dimensions "$temporary_file" "width")"
+        local crop_x="$(( ($scaled_width - $screen_width) / 2 ))"
         local crop_y=0
     else
-        # Original is taller than target - scale by width, then crop height
-        local scale_factor=$(echo "scale=10; $screen_width / $original_width" | bc)
-        local scaled_height=$(echo "scale=0; $original_height * $scale_factor / 1" | bc)
+        # Original is taller than target, so scale by width, then crop height
+        scale_image_with_values "$input_file" "$temporary_file" "$screen_width" -1
+        local scaled_height="$(get_image_dimensions "$temporary_file" "height")"
         local crop_x=0
-        local crop_y=$(echo "scale=0; ($scaled_height - $screen_height) / 2" | bc)
+        local crop_y="$(( ($scaled_height - $screen_height) / 2 ))"
     fi
 
-    local temporary_file="$(generate_random_temporary_file)"
-    scale_image_by_factor "$input_file" "$temporary_file" "$scale_factor" || return 1
     crop_image "$temporary_file" "$output_file" "$screen_width" "$screen_height" "$crop_x" "$crop_y" || return 1
     rm -f "$temporary_file"
 }
