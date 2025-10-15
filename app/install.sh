@@ -15,7 +15,7 @@ main() {
     download_and_convert_fonts || { log_failed "Failed to download and convert fonts."; exit 1; }
     substitute_variables_in_theme_txt || { log_failed "Failed to substitute variables in theme.txt."; exit 1; }
     copy_assets_to_theme_dir || { log_failed "Failed to copy assets to theme directory."; exit 1; }
-    set_grub_theme || { log_failed "Failed to set GRUB theme."; exit 1; }
+    edit_file_etc_default_grub || { log_failed "Failed to edit file '/etc/default/grub'."; exit 1; }
     update_grub_configuration || { log_failed "Failed to update GRUB configuration."; exit 1; }
     cleanup || { log_failed "Failed to cleanup."; exit 1; }
 
@@ -229,14 +229,23 @@ copy_assets_to_theme_dir() {
     sudo cp "$TEMP_DIR/fonts"/*.pf2 "$GRUB_THEME_DIR"/ || true
 }
 
-set_grub_theme() {
-    log_info "Setting GRUB theme..."
+edit_file_etc_default_grub() {
+    log_info "Editing file '/etc/default/grub'..."
 
-    if grep "GRUB_THEME=" /etc/default/grub >/dev/null 2>&1; then
-        sudo sed -i "s|.*GRUB_THEME=.*|GRUB_THEME=\"${GRUB_THEME_DIR}/theme.txt\"|" /etc/default/grub
-    else
-        sudo echo "GRUB_THEME=\"${GRUB_THEME_DIR}/theme.txt\"" >> /etc/default/grub
-    fi
+    update_value_in_etc_default_grub "GRUB_THEME" "\"${GRUB_THEME_DIR}/theme.txt\"" || return 1
+    update_value_in_etc_default_grub "GRUB_GFXMODE" "${SCREEN_WIDTH}x${SCREEN_HEIGHT}x${SCREEN_COLOR_DEPTH}" || return 1
+    update_value_in_etc_default_grub "GRUB_GFXPAYLOAD_LINUX" "keep" || return 1
+    update_value_in_etc_default_grub "GRUB_TIMEOUT" "$COUNTDOWN_TIMEOUT" || return 1
+
+    uncomment_setting_in_etc_default_grub "GRUB_THEME" || return 1
+    uncomment_setting_in_etc_default_grub "GRUB_GFXMODE" || return 1
+    uncomment_setting_in_etc_default_grub "GRUB_GFXPAYLOAD_LINUX" || return 1
+    uncomment_setting_in_etc_default_grub "GRUB_TIMEOUT" || return 1
+
+    comment_setting_in_etc_default_grub "GRUB_TERMINAL_OUTPUT" || return 1
+    comment_setting_in_etc_default_grub "GRUB_BACKGROUND" || return 1
+    comment_setting_in_etc_default_grub "GRUB_COLOR_NORMAL" || return 1
+    comment_setting_in_etc_default_grub "GRUB_COLOR_HIGHLIGHT" || return 1
 }
 
 update_grub_configuration() {

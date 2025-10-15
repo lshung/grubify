@@ -35,6 +35,7 @@ THEME_ACCENT_COLOR="#fab387"        # Reference color for accent (highlight)
 # Screen
 SCREEN_WIDTH=1920       # Width of screen in pixels
 SCREEN_HEIGHT=1080      # Height of screen in pixels
+SCREEN_COLOR_DEPTH=32   # Color depth of screen in bits
 
 # Background
 BACKGROUND_TYPE="file"          # Accepted values: 'file' or 'solid'
@@ -89,6 +90,7 @@ COUNTDOWN_LEFT=35%                          # Left position of countdown label i
 COUNTDOWN_TOP=85%                           # Top position of countdown label in percentage or pixels
 COUNTDOWN_ALIGN="center"                    # Alignment of countdown label
 COUNTDOWN_COLOR=""                          # Text color of countdown label (leave empty to use THEME_TEXT_COLOR)
+COUNTDOWN_TIMEOUT=5                         # Timeout before auto-boot in seconds
 
 # Progress bar
 PROGRESS_BAR_WIDTH=30%          # Width of progress bar in percentage or pixels
