@@ -42,7 +42,6 @@ A powerful Bash-based tool for creating and installing custom GRUB bootloader th
 - **FFmpeg**: Image processing and manipulation
 - **GRUB tools**: Font conversion and configuration
 - **curl**: Downloading assets
-- **bc**: Mathematical calculations
 
 ## Installation
 

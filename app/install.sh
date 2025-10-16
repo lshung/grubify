@@ -5,21 +5,33 @@
 set -euo pipefail
 
 main() {
-    declare_variables || { log_failed "Failed to declare variables."; exit 1; }
-    clean_temporary_directory || { log_failed "Failed to clean temporary directory."; exit 1; }
-    parse_config_values || { log_failed "Failed to parse config values."; exit 1; }
-    download_background_image_if_not_set || { log_failed "Failed to download background image."; exit 1; }
-    generate_background_image || { log_failed "Failed to generate background image."; exit 1; }
-    generate_selected_item_pixmap || { log_failed "Failed to generate selected item pixmap."; exit 1; }
-    generate_menu_item_icons || { log_failed "Failed to generate menu item icons."; exit 1; }
-    download_and_convert_fonts || { log_failed "Failed to download and convert fonts."; exit 1; }
-    substitute_variables_in_theme_txt || { log_failed "Failed to substitute variables in theme.txt."; exit 1; }
-    copy_assets_to_theme_dir || { log_failed "Failed to copy assets to theme directory."; exit 1; }
-    edit_file_etc_default_grub || { log_failed "Failed to edit file '/etc/default/grub'."; exit 1; }
-    update_grub_configuration || { log_failed "Failed to update GRUB configuration."; exit 1; }
-    cleanup || { log_failed "Failed to cleanup."; exit 1; }
+    check_required_commands_exist || return 1
+    declare_variables || { log_failed "Failed to declare variables."; return 1; }
+    clean_temporary_directory || { log_failed "Failed to clean temporary directory."; return 1; }
+    parse_config_values || { log_failed "Failed to parse config values."; return 1; }
+    download_background_image_if_not_set || { log_failed "Failed to download background image."; return 1; }
+    generate_background_image || { log_failed "Failed to generate background image."; return 1; }
+    generate_selected_item_pixmap || { log_failed "Failed to generate selected item pixmap."; return 1; }
+    generate_menu_item_icons || { log_failed "Failed to generate menu item icons."; return 1; }
+    download_and_convert_fonts || { log_failed "Failed to download and convert fonts."; return 1; }
+    substitute_variables_in_theme_txt || { log_failed "Failed to substitute variables in theme.txt."; return 1; }
+    copy_assets_to_theme_dir || { log_failed "Failed to copy assets to theme directory."; return 1; }
+    edit_file_etc_default_grub || { log_failed "Failed to edit file '/etc/default/grub'."; return 1; }
+    update_grub_configuration || { log_failed "Failed to update GRUB configuration."; return 1; }
+    cleanup || { log_failed "Failed to cleanup."; return 1; }
 
     log_ok "Done."
+}
+
+check_required_commands_exist() {
+    log_info "Checking required commands exist..."
+
+    check_command_exists "ffmpeg" || { log_error "Command 'ffmpeg' not found."; return 1; }
+    check_command_exists "grub-mkfont" || { log_error "Command 'grub-mkfont' not found."; return 1; }
+    check_command_exists "curl" || { log_error "Command 'curl' not found."; return 1; }
+    check_command_exists "envsubst" || { log_error "Command 'envsubst' not found."; return 1; }
+    check_command_exists "tar" || { log_error "Command 'tar' not found."; return 1; }
+    check_one_of_commands_exists "update-grub" "grub-mkconfig" "grub2-mkconfig" || { log_error "Command 'update-grub', 'grub-mkconfig' or 'grub2-mkconfig' not found."; return 1; }
 }
 
 declare_variables() {

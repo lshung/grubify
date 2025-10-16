@@ -144,11 +144,7 @@ scale_image_to_fit_screen() {
     local original_width="$(get_image_dimensions "$input_file" "width")"
     local original_height="$(get_image_dimensions "$input_file" "height")"
 
-    # Calculate aspect ratios
-    local original_ratio=$(echo "scale=10; $original_width / $original_height" | bc)
-    local target_ratio=$(echo "scale=10; $screen_width / $screen_height" | bc)
-
-    if (( $(echo "$original_ratio > $target_ratio" | bc -l) )); then
+    if (( original_width * screen_height > screen_width * original_height )); then
         # Original is wider than target, so scale by height, then crop width
         scale_image_with_values "$input_file" "$temporary_file" -1 "$screen_height"
         local scaled_width="$(get_image_dimensions "$temporary_file" "width")"
