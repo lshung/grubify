@@ -23,6 +23,9 @@ TEMP_DIR="/tmp/$APP_NAME_LOWER"
 # Log
 LOG_TIMESTAMP_INCLUDED="no"
 
+# Verbosity
+VERBOSE="no"
+
 ####################################################################
 # THEME SETTINGS                                                   #
 ####################################################################
