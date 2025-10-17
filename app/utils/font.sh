@@ -18,7 +18,7 @@ download_font_unifont() {
     [[ "$VERBOSE" == "yes" ]] && log_info "Downloading font 'Unifont'..." || true
 
     local url="https://unifoundry.com/pub/unifont/unifont-17.0.01/font-builds/unifont-17.0.01.otf"
-    curl -L -s -o "$TEMP_DIR/fonts/unifont.otf" "$url" || { log_failed "Failed to download font 'Unifont'."; return 1; }
+    download_with_retry "$url" "$TEMP_DIR/fonts/unifont.otf" || { log_failed "Failed to download font 'Unifont'."; return 1; }
 
     [[ "$VERBOSE" == "yes" ]] && log_ok "Downloaded font 'Unifont' successfully." || true
 }
@@ -27,7 +27,7 @@ download_font_terminus() {
     [[ "$VERBOSE" == "yes" ]] && log_info "Downloading font 'Terminus'..." || true
 
     local url="https://sourceforge.net/projects/terminus-font/files/terminus-font-4.49/terminus-font-4.49.1.tar.gz/download"
-    curl -L -s -o "$TEMP_DIR/fonts/terminus.tar.gz" "$url" || { log_failed "Failed to download font 'Terminus'."; return 1; }
+    download_with_retry "$url" "$TEMP_DIR/fonts/terminus.tar.gz" || { log_failed "Failed to download font 'Terminus'."; return 1; }
 
     [[ "$VERBOSE" == "yes" ]] && log_ok "Downloaded font 'Terminus' successfully." || true
 }

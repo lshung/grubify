@@ -55,8 +55,8 @@ show_usage() {
 check_required_commands_exist() {
     log_info "Checking required commands exist..."
 
-    check_command_exists "ffmpeg" || { log_error "Command 'ffmpeg' not found."; return 1; }
-    check_command_exists "curl" || { log_error "Command 'curl' not found."; return 1; }
+    check_command_exists "ffmpeg" || return 1
+    check_one_of_commands_exists "curl" "wget" || { log_error "Command 'curl' or 'wget' not found."; return 1; }
 
     [[ "$VERBOSE" == "yes" ]] && log_ok "All required commands exist." || true
 }
@@ -103,7 +103,7 @@ download_background_image_if_not_set() {
 
         local url="https://raw.githubusercontent.com/lshung/grubify-assets/master/background.jpg"
         BACKGROUND_FILE="$TEMP_DIR/background.jpg"
-        curl -s -L -o "$BACKGROUND_FILE" "$url" || return 1
+        download_with_retry "$url" "$BACKGROUND_FILE" || return 1
 
         [[ "$VERBOSE" == "yes" ]] && log_ok "Downloaded background image successfully." || true
     fi

@@ -58,11 +58,9 @@ show_usage() {
 check_required_commands_exist() {
     log_info "Checking required commands exist..."
 
-    check_command_exists "ffmpeg" || { log_error "Command 'ffmpeg' not found."; return 1; }
-    check_command_exists "grub-mkfont" || { log_error "Command 'grub-mkfont' not found."; return 1; }
-    check_command_exists "curl" || { log_error "Command 'curl' not found."; return 1; }
-    check_command_exists "envsubst" || { log_error "Command 'envsubst' not found."; return 1; }
-    check_command_exists "tar" || { log_error "Command 'tar' not found."; return 1; }
+    check_commands_exist "grub-mkfont" "envsubst" "tar" || return 1
+    check_command_exists "ffmpeg" || return 1
+    check_one_of_commands_exists "curl" "wget" || { log_error "Command 'curl' or 'wget' not found."; return 1; }
     check_one_of_commands_exists "update-grub" "grub-mkconfig" "grub2-mkconfig" || { log_error "Command 'update-grub', 'grub-mkconfig' or 'grub2-mkconfig' not found."; return 1; }
 
     [[ "$VERBOSE" == "yes" ]] && log_ok "All required commands exist." || true

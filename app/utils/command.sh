@@ -13,6 +13,14 @@ check_command_exists() {
     fi
 }
 
+check_commands_exist() {
+    local commands=("$@")
+
+    for command in "${commands[@]}"; do
+        check_command_exists "$command" || return 1
+    done
+}
+
 check_one_of_commands_exists() {
     local commands=("$@")
 
