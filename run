@@ -56,6 +56,9 @@ parse_arguments() {
             generate-bg)
                 source "$APP_MODULES_DIR/generate-bg.sh" "$@"
                 ;;
+            generate-fonts)
+                source "$APP_MODULES_DIR/generate-fonts.sh" "$@"
+                ;;
             install)
                 source "$APP_MODULES_DIR/install.sh" "$@"
                 ;;
@@ -76,6 +79,7 @@ show_usage() {
     echo ""
     echo "Commands:"
     echo "    generate-bg       Generate background image only"
+    echo "    generate-fonts    Generate fonts only"
     echo "    install           Install theme"
     echo "    remove            Remove theme"
     echo ""

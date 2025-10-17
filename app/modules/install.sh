@@ -12,7 +12,7 @@ main() {
     call_module_generate_bg || return 1
     generate_selected_item_pixmap || { log_failed "Failed to generate selected item pixmap."; return 1; }
     generate_menu_item_icons || { log_failed "Failed to generate menu item icons."; return 1; }
-    download_and_convert_fonts || { log_failed "Failed to download and convert fonts."; return 1; }
+    call_module_generate_fonts || return 1
     substitute_variables_in_theme_txt || { log_failed "Failed to substitute variables in theme.txt."; return 1; }
     copy_assets_to_theme_dir || { log_failed "Failed to copy assets to theme directory."; return 1; }
     edit_file_etc_default_grub || { log_failed "Failed to edit file '/etc/default/grub'."; return 1; }
@@ -130,15 +130,8 @@ generate_menu_item_icons() {
     [[ "$VERBOSE" == "yes" ]] && log_ok "Generated menu item icons successfully." || true
 }
 
-download_and_convert_fonts() {
-    log_info "Downloading and converting fonts..."
-
-    download_font "unifont" || return 1
-    download_font "terminus" || return 1
-    convert_font_to_pf2_format "unifont" || return 1
-    convert_font_to_pf2_format "terminus" || return 1
-
-    [[ "$VERBOSE" == "yes" ]] && log_ok "Downloaded and converted fonts successfully." || true
+call_module_generate_fonts() {
+    source "$APP_MODULES_DIR/generate-fonts.sh" || return 1
 }
 
 substitute_variables_in_theme_txt() {
