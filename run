@@ -53,11 +53,14 @@ parse_arguments() {
                 echo "$APP_VERSION"
                 exit 0
                 ;;
+            generate-bg)
+                source "$APP_MODULES_DIR/generate-bg.sh" "$@"
+                ;;
             install)
-                source "$APP_DIR/install.sh" "$@"
+                source "$APP_MODULES_DIR/install.sh" "$@"
                 ;;
             remove)
-                source "$APP_DIR/remove.sh" "$@"
+                source "$APP_MODULES_DIR/remove.sh" "$@"
                 ;;
             *)
                 log_error "Invalid command or option '$1'."
@@ -72,6 +75,7 @@ show_usage() {
     echo "Usage: $APP_NAME_LOWER [COMMAND|OPTION]"
     echo ""
     echo "Commands:"
+    echo "    generate-bg       Generate background image only"
     echo "    install           Install theme"
     echo "    remove            Remove theme"
     echo ""
