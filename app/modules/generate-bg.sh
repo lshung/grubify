@@ -7,7 +7,7 @@ set -euo pipefail
 main() {
     IS_SOURCED="yes"
 
-    if [[ "$1" == "generate-bg" ]]; then
+    if [[ "${1:-}" == "generate-bg" ]]; then
         IS_SOURCED="no"
         parse_arguments "$@" || return 1
         check_required_commands_exist || return 1
