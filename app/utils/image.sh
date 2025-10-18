@@ -181,28 +181,3 @@ create_solid_color_image() {
         return 1
     fi
 }
-
-export_menu_item_icon() {
-    local input_file="$1"
-    local output_file="$2"
-    local width="$3"
-    local height="$4"
-    local filters=("scale=${width}:${height}")
-    local temporary_file="$(generate_random_temporary_file)"
-
-    if [[ ! -f "$input_file" ]]; then
-        log_error "Input file '$input_file' does not exist."
-        return 1
-    fi
-
-    if ! ffmpeg -i "$input_file" -filter_complex "${filters[*]}" -c png -dpi 300 -frames:v 1 -update 1 -y "$temporary_file" >/dev/null 2>&1; then
-        log_error "Failed to execute ffmpeg."
-        rm -f "$temporary_file"
-        return 1
-    fi
-
-    if ! mv "$temporary_file" "$output_file"; then
-        log_error "Failed to move temporary file '$temporary_file' to '$output_file'."
-        return 1
-    fi
-}

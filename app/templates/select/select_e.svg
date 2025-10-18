@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="12" height="100" viewBox="0 0 12 100">
+<svg xmlns="http://www.w3.org/2000/svg" width="8" height="40" viewBox="0 0 8 40">
     <g fill="#fab387" stroke="none" stroke-width="0">
         <path d="M 0 0
-            A 12 12 0 0 1 12 12
-            V 88
-            A 12 12 0 0 1 0 100
+            A 8 8 0 0 1 8 8
+            V 32
+            A 8 8 0 0 1 0 40
             Z"/>
     </g>
 </svg>

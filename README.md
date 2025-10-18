@@ -158,9 +158,9 @@ Copy any of these to `~/.config/grubify/grubify.conf` and customize as needed. F
 | `COUNTDOWN_TIMEOUT` | Timeout before auto-boot in seconds | `5` |
 | **Progress Bar** | | |
 | `PROGRESS_BAR_WIDTH` | Width of progress bar in percentage or pixels | `30%` |
+| `PROGRESS_BAR_HEIGHT` | Height of progress bar in percentage or pixels | `25` |
 | `PROGRESS_BAR_LEFT` | Left position of progress bar in percentage or pixels | `35%` |
 | `PROGRESS_BAR_TOP` | Top position of progress bar in percentage or pixels | `90%` |
-| `PROGRESS_BAR_HEIGHT` | Height of progress bar in pixels | `25` |
 | `PROGRESS_BAR_ALIGN` | Alignment of progress bar | `center` |
 | `PROGRESS_BAR_FOREGROUND_COLOR` | Foreground color of progress bar (leave empty to use THEME_ACCENT_COLOR) | `` |
 | `PROGRESS_BAR_BACKGROUND_COLOR` | Background color of progress bar (leave empty to use THEME_BACKGROUND_COLOR) | `` |

@@ -60,6 +60,7 @@ check_required_commands_exist() {
 
     check_commands_exist "grub-mkfont" "envsubst" "tar" || return 1
     check_command_exists "ffmpeg" || return 1
+    check_command_exists "rsvg-convert" || return 1
     check_one_of_commands_exists "curl" "wget" || { log_error "Command 'curl' or 'wget' not found."; return 1; }
     check_one_of_commands_exists "update-grub" "grub-mkconfig" "grub2-mkconfig" || { log_error "Command 'update-grub', 'grub-mkconfig' or 'grub2-mkconfig' not found."; return 1; }
 
@@ -114,7 +115,7 @@ generate_selected_item_pixmap() {
 
     for file_name in "select_c" "select_w" "select_e"; do
         sed -i "s/fill=\".*\"/fill=\"$SELECTED_ITEM_BACKGROUND_COLOR\"/g" "$TEMP_DIR/$file_name.svg" || return 1
-        scale_image_with_values "$TEMP_DIR/$file_name.svg" "$TEMP_DIR/$file_name.png" -1 "$ITEM_HEIGHT" || return 1
+        rsvg-convert -d 1000 -h "$ITEM_HEIGHT" "$TEMP_DIR/$file_name.svg" -o "$TEMP_DIR/$file_name.png" || return 1
     done
 
     [[ "$VERBOSE" == "yes" ]] && log_ok "Generated selected item pixmap successfully." || true
@@ -124,7 +125,7 @@ generate_menu_item_icons() {
     log_info "Generating menu item icons..."
 
     for file in "$APP_TEMPLATES_ICONS_DIR/$ICON_THEME"/*.svg; do
-        export_menu_item_icon "$file" "$TEMP_DIR/icons/$(basename "$file" .svg).png" -1 "$ICON_SIZE" || return 1
+        rsvg-convert -d 1000 -w "$ICON_SIZE" -h "$ICON_SIZE" "$file" -o "$TEMP_DIR/icons/$(basename "$file" .svg).png" || return 1
     done
 
     [[ "$VERBOSE" == "yes" ]] && log_ok "Generated menu item icons successfully." || true

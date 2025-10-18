@@ -37,7 +37,7 @@ update_value_in_etc_default_grub() {
     local file="/etc/default/grub"
 
     if grep -E "^#?\\s*$key=" "$file" >/dev/null 2>&1; then
-        sudo sed -i "s|^\(#\\s*\)$key=.*|\\1$key=${value}|g" "$file" || { log_error "Failed to update '$key=$value' in '$file'"; return 1; }
+        sudo sed -i "s|^\(#\\s*\)\?$key=.*|\\1$key=$value|g" "$file" || { log_error "Failed to update '$key=$value' in '$file'"; return 1; }
     else
         sudo sh -c "echo '$key=$value' >> '$file'" || { log_error "Failed to append '$key=$value' in '$file'"; return 1; }
     fi
