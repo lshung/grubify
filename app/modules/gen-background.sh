@@ -78,25 +78,17 @@ set_default_config_values() {
 parse_config_values() {
     log_info "Parsing config values..."
 
-    PARSED_CONTAINER_WIDTH="$CONTAINER_WIDTH"
-    if [[ "$CONTAINER_WIDTH" =~ ^[0-9]+%$ ]]; then
-        PARSED_CONTAINER_WIDTH="$(( $SCREEN_WIDTH * ${CONTAINER_WIDTH%\%} / 100 ))"
-    fi
+    parse_grub_geometry "$CONTAINER_WIDTH" "$SCREEN_WIDTH" >/dev/null \
+        && PARSED_CONTAINER_WIDTH="$(parse_grub_geometry "$CONTAINER_WIDTH" "$SCREEN_WIDTH")" || return 1
 
-    PARSED_CONTAINER_HEIGHT="$CONTAINER_HEIGHT"
-    if [[ "$CONTAINER_HEIGHT" =~ ^[0-9]+%$ ]]; then
-        PARSED_CONTAINER_HEIGHT="$(( $SCREEN_HEIGHT * ${CONTAINER_HEIGHT%\%} / 100 ))"
-    fi
+    parse_grub_geometry "$CONTAINER_HEIGHT" "$SCREEN_HEIGHT" >/dev/null \
+        && PARSED_CONTAINER_HEIGHT="$(parse_grub_geometry "$CONTAINER_HEIGHT" "$SCREEN_HEIGHT")" || return 1
 
-    PARSED_CONTAINER_TOP="$CONTAINER_TOP"
-    if [[ "$CONTAINER_TOP" =~ ^[0-9]+%$ ]]; then
-        PARSED_CONTAINER_TOP="$(( $SCREEN_HEIGHT * ${CONTAINER_TOP%\%} / 100 ))"
-    fi
+    parse_grub_geometry "$CONTAINER_LEFT" "$SCREEN_WIDTH" >/dev/null \
+        && PARSED_CONTAINER_LEFT="$(parse_grub_geometry "$CONTAINER_LEFT" "$SCREEN_WIDTH")" || return 1
 
-    PARSED_CONTAINER_LEFT="$CONTAINER_LEFT"
-    if [[ "$CONTAINER_LEFT" =~ ^[0-9]+%$ ]]; then
-        PARSED_CONTAINER_LEFT="$(( $SCREEN_WIDTH * ${CONTAINER_LEFT%\%} / 100 ))"
-    fi
+    parse_grub_geometry "$CONTAINER_TOP" "$SCREEN_HEIGHT" >/dev/null \
+        && PARSED_CONTAINER_TOP="$(parse_grub_geometry "$CONTAINER_TOP" "$SCREEN_HEIGHT")" || return 1
 
     [[ "$VERBOSE" == "yes" ]] && log_ok "Parsed config values successfully." || true
 }
