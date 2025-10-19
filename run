@@ -53,11 +53,14 @@ parse_arguments() {
                 echo "$APP_VERSION"
                 exit 0
                 ;;
-            generate-bg)
-                source "$APP_MODULES_DIR/generate-bg.sh" "$@"
+            gen-background)
+                source "$APP_MODULES_DIR/gen-background.sh" "$@"
                 ;;
-            generate-fonts)
-                source "$APP_MODULES_DIR/generate-fonts.sh" "$@"
+            gen-fonts)
+                source "$APP_MODULES_DIR/gen-fonts.sh" "$@"
+                ;;
+            gen-theme-file)
+                source "$APP_MODULES_DIR/gen-theme-file.sh" "$@"
                 ;;
             install)
                 source "$APP_MODULES_DIR/install.sh" "$@"
@@ -78,8 +81,9 @@ show_usage() {
     echo "Usage: $APP_NAME_LOWER [COMMAND|OPTION]"
     echo ""
     echo "Commands:"
-    echo "    generate-bg       Generate background image only"
-    echo "    generate-fonts    Generate fonts only"
+    echo "    gen-background    Generate background image only"
+    echo "    gen-fonts         Generate fonts only"
+    echo "    gen-theme-file    Generate file 'theme.txt' only"
     echo "    install           Install theme"
     echo "    remove            Remove theme"
     echo ""

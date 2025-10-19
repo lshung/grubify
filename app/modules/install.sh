@@ -9,11 +9,11 @@ main() {
     check_required_commands_exist || return 1
     declare_variables || { log_failed "Failed to declare variables."; return 1; }
     clean_temporary_directory || { log_failed "Failed to clean temporary directory."; return 1; }
-    call_module_generate_bg || return 1
+    call_module_generate_background || return 1
     generate_selected_item_pixmap || { log_failed "Failed to generate selected item pixmap."; return 1; }
     generate_menu_item_icons || { log_failed "Failed to generate menu item icons."; return 1; }
     call_module_generate_fonts || return 1
-    substitute_variables_in_theme_txt || { log_failed "Failed to substitute variables in theme.txt."; return 1; }
+    call_module_generate_theme_file || return 1
     copy_assets_to_theme_dir || { log_failed "Failed to copy assets to theme directory."; return 1; }
     edit_file_etc_default_grub || { log_failed "Failed to edit file '/etc/default/grub'."; return 1; }
     update_grub_configuration || { log_failed "Failed to update GRUB configuration."; return 1; }
@@ -104,8 +104,8 @@ clean_temporary_directory() {
     [[ "$VERBOSE" == "yes" ]] && log_ok "Cleaned temporary directory successfully." || true
 }
 
-call_module_generate_bg() {
-    source "$APP_MODULES_DIR/generate-bg.sh" || return 1
+call_module_generate_background() {
+    source "$APP_MODULES_DIR/gen-background.sh" || return 1
 }
 
 generate_selected_item_pixmap() {
@@ -132,27 +132,11 @@ generate_menu_item_icons() {
 }
 
 call_module_generate_fonts() {
-    source "$APP_MODULES_DIR/generate-fonts.sh" || return 1
+    source "$APP_MODULES_DIR/gen-fonts.sh" || return 1
 }
 
-substitute_variables_in_theme_txt() {
-    log_info "Substituting variables in file 'theme.txt'..."
-
-    cp "$APP_TEMPLATES_DIR/theme.txt" "$TEMP_DIR/theme.tmp"
-
-    export TERMINAL_FONT_NAME TERMINAL_FONT_SIZE
-    export MENU_WIDTH MENU_HEIGHT MENU_LEFT MENU_TOP
-    export ITEM_COLOR SELECTED_ITEM_COLOR ITEM_HEIGHT ITEM_PADDING ITEM_SPACING
-    export ITEM_FONT_NAME ITEM_FONT_SIZE SELECTED_ITEM_FONT_NAME SELECTED_ITEM_FONT_SIZE
-    export ICON_SIZE ITEM_ICON_SPACE
-    export COUNTDOWN_FONT_NAME COUNTDOWN_FONT_SIZE COUNTDOWN_TEXT COUNTDOWN_WIDTH
-    export COUNTDOWN_LEFT COUNTDOWN_TOP COUNTDOWN_ALIGN COUNTDOWN_COLOR
-    export PROGRESS_BAR_WIDTH PROGRESS_BAR_LEFT PROGRESS_BAR_TOP PROGRESS_BAR_HEIGHT
-    export PROGRESS_BAR_ALIGN PROGRESS_BAR_FOREGROUND_COLOR PROGRESS_BAR_BACKGROUND_COLOR PROGRESS_BAR_BORDER_COLOR
-
-    envsubst < "$TEMP_DIR/theme.tmp" > "$TEMP_DIR/theme.txt"
-
-    [[ "$VERBOSE" == "yes" ]] && log_ok "Substituted variables in file 'theme.txt' successfully." || true
+call_module_generate_theme_file() {
+    source "$APP_MODULES_DIR/gen-theme-file.sh" || return 1
 }
 
 copy_assets_to_theme_dir() {
@@ -176,7 +160,7 @@ edit_file_etc_default_grub() {
     update_value_in_etc_default_grub "GRUB_THEME" "\"${GRUB_THEME_DIR}/theme.txt\"" || return 1
     update_value_in_etc_default_grub "GRUB_GFXMODE" "${SCREEN_WIDTH}x${SCREEN_HEIGHT}x${SCREEN_COLOR_DEPTH}" || return 1
     update_value_in_etc_default_grub "GRUB_GFXPAYLOAD_LINUX" "keep" || return 1
-    update_value_in_etc_default_grub "GRUB_TIMEOUT" "$COUNTDOWN_TIMEOUT" || return 1
+    update_value_in_etc_default_grub "GRUB_TIMEOUT" "$GRUB_TIMEOUT" || return 1
 
     uncomment_setting_in_etc_default_grub "GRUB_THEME" || return 1
     uncomment_setting_in_etc_default_grub "GRUB_GFXMODE" || return 1

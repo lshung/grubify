@@ -146,6 +146,8 @@ Copy any of these to `~/.config/grubify/grubify.conf` and customize as needed. F
 | `ICON_THEME` | Icon theme: 'papirus' or 'tela-circle' | `papirus` |
 | `ICON_SIZE` | Size of icon in pixels (height and width) | `32` |
 | `ITEM_ICON_SPACE` | Space between icon and title text in pixels | `15` |
+| **Grub timeout** | | |
+| `GRUB_TIMEOUT` | Timeout before auto-boot in seconds | `5` |
 | **Countdown** | | |
 | `COUNTDOWN_FONT_NAME` | Countdown font: 'Terminus Regular', 'Terminus Bold', or 'Unifont Regular' | `Unifont Regular` |
 | `COUNTDOWN_FONT_SIZE` | Countdown font size (12\|14\|16\|18\|20\|22\|24\|28\|32 for Terminus, 16\|18\|20\|22\|24\|26\|28\|30\|32 for Unifont) | `16` |
@@ -155,7 +157,6 @@ Copy any of these to `~/.config/grubify/grubify.conf` and customize as needed. F
 | `COUNTDOWN_TOP` | Top position of countdown label in percentage or pixels | `85%` |
 | `COUNTDOWN_ALIGN` | Alignment of countdown label | `center` |
 | `COUNTDOWN_COLOR` | Text color of countdown label (leave empty to use THEME_TEXT_COLOR) | `` |
-| `COUNTDOWN_TIMEOUT` | Timeout before auto-boot in seconds | `5` |
 | **Progress Bar** | | |
 | `PROGRESS_BAR_WIDTH` | Width of progress bar in percentage or pixels | `30%` |
 | `PROGRESS_BAR_HEIGHT` | Height of progress bar in percentage or pixels | `25` |

@@ -7,7 +7,7 @@ set -euo pipefail
 main() {
     IS_SOURCED="yes"
 
-    if [[ "${1:-}" == "generate-fonts" ]]; then
+    if [[ "${1:-}" == "gen-fonts" ]]; then
         IS_SOURCED="no"
         parse_arguments "$@" || return 1
         check_required_commands_exist || return 1
@@ -16,6 +16,12 @@ main() {
     parse_font_config_values || { log_failed "Failed to parse font config values."; return 1; }
     download_required_fonts || { log_failed "Failed to download required fonts."; return 1; }
     convert_fonts || { log_failed "Failed to convert fonts."; return 1; }
+
+    if [[ "$IS_SOURCED" == "no" ]]; then
+        log_info "Fonts saved to '$TEMP_DIR/fonts'."
+        log_info "You can list them by running command 'ls -l $TEMP_DIR/fonts/*.pf2'."
+        log_ok "Done."
+    fi
 }
 
 parse_arguments() {
@@ -44,7 +50,7 @@ parse_arguments() {
 }
 
 show_usage() {
-    echo "Usage: $APP_NAME_LOWER generate-fonts [OPTIONS]"
+    echo "Usage: $APP_NAME_LOWER gen-fonts [OPTIONS]"
     echo ""
     echo "Options:"
     echo "    -h, --help        Show help"
@@ -118,12 +124,6 @@ convert_fonts() {
 
     if [[ "${#TERMINUS_BOLD_SIZES[@]}" -gt 0 ]]; then
         convert_font_to_pf2_format "terminus-bold" "${TERMINUS_BOLD_SIZES[@]}" || return 1
-    fi
-
-    if [[ "$IS_SOURCED" == "no" ]]; then
-        log_info "Converted fonts saved to '$TEMP_DIR/fonts'."
-        log_info "You can list them by running command 'ls -l $TEMP_DIR/fonts/*.pf2'."
-        log_ok "Done."
     fi
 }
 

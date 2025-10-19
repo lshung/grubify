@@ -85,7 +85,11 @@ ICON_THEME="papirus"    # Accepted values: 'papirus' or 'tela-circle'
 ICON_SIZE=32            # Size of icon in pixels (height and width)
 ITEM_ICON_SPACE=15      # Space between icon and title text in pixels
 
+# Grub timeout
+GRUB_TIMEOUT=5      # Timeout before auto-boot in seconds
+
 # Countdown
+COUNTDOWN_VISIBLE="yes"                     # Show or hide countdown label. Accepted values: 'yes' or 'no'
 COUNTDOWN_FONT_NAME="Unifont Regular"       # Accepted values: 'Terminus Regular', 'Terminus Bold', or 'Unifont Regular'
 COUNTDOWN_FONT_SIZE=16                      # 12|14|16|18|20|22|24|28|32 for Terminus and 16|18|20|22|24|26|28|30|32 for Unifont
 COUNTDOWN_TEXT="Auto-boot in %d seconds"    # Content of countdown label
@@ -94,9 +98,9 @@ COUNTDOWN_LEFT=35%                          # Left position of countdown label i
 COUNTDOWN_TOP=85%                           # Top position of countdown label in percentage or pixels
 COUNTDOWN_ALIGN="center"                    # Alignment of countdown label
 COUNTDOWN_COLOR=""                          # Text color of countdown label (leave empty to use THEME_TEXT_COLOR)
-COUNTDOWN_TIMEOUT=5                         # Timeout before auto-boot in seconds
 
 # Progress bar
+PROGRESS_BAR_VISIBLE="yes"      # Show or hide progress bar. Accepted values: 'yes' or 'no'
 PROGRESS_BAR_WIDTH=30%          # Width of progress bar in percentage or pixels
 PROGRESS_BAR_HEIGHT=25          # Height of progress bar in percentage or pixels
 PROGRESS_BAR_LEFT=35%           # Left position of progress bar in percentage or pixels

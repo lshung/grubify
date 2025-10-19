@@ -7,7 +7,7 @@ set -euo pipefail
 main() {
     IS_SOURCED="yes"
 
-    if [[ "${1:-}" == "generate-bg" ]]; then
+    if [[ "${1:-}" == "gen-background" ]]; then
         IS_SOURCED="no"
         parse_arguments "$@" || return 1
         check_required_commands_exist || return 1
@@ -17,6 +17,12 @@ main() {
     parse_config_values || { log_failed "Failed to parse config values."; return 1; }
     download_background_image_if_not_set || { log_failed "Failed to download background image."; return 1; }
     generate_background_image || { log_failed "Failed to generate background image."; return 1; }
+
+    if [[ "$IS_SOURCED" == "no" ]]; then
+        log_info "Background image saved to '$TEMP_DIR/background.png'."
+        log_info "You can preview it by running command 'xdg-open $TEMP_DIR/background.png'."
+        log_ok "Done."
+    fi
 }
 
 parse_arguments() {
@@ -45,7 +51,7 @@ parse_arguments() {
 }
 
 show_usage() {
-    echo "Usage: $APP_NAME_LOWER generate-bg [OPTIONS]"
+    echo "Usage: $APP_NAME_LOWER gen-background [OPTIONS]"
     echo ""
     echo "Options:"
     echo "    -h, --help        Show help"
@@ -137,12 +143,6 @@ generate_background_image() {
     overlay_container_on_background || return 1
 
     [[ "$VERBOSE" == "yes" ]] && log_ok "Generated background image successfully." || true
-
-    if [[ "$IS_SOURCED" == "no" ]]; then
-        log_info "Background image saved to '$TEMP_DIR/background.png'."
-        log_info "You can preview it by running command 'xdg-open $TEMP_DIR/background.png'."
-        log_ok "Done."
-    fi
 }
 
 fit_background_image_to_screen() {
