@@ -49,3 +49,27 @@ terminal-border: "0"
   bg_color = "$PROGRESS_BAR_BACKGROUND_COLOR"
   border_color = "$PROGRESS_BAR_BACKGROUND_COLOR"
 }
+
++ label {
+  id = "__timeout__"
+  text = "%d"
+  width = $PARSED_CIRCULAR_PROGRESS_WIDTH
+  left = $PARSED_CIRCULAR_PROGRESS_LEFT
+  top = $PARSED_CIRCULAR_PROGRESS_COUNTDOWN_TOP
+  align = center
+  color = "$CIRCULAR_PROGRESS_COUNTDOWN_COLOR"
+  font = "$CIRCULAR_PROGRESS_COUNTDOWN_FONT_NAME $CIRCULAR_PROGRESS_COUNTDOWN_FONT_SIZE"
+}
+
++ circular_progress {
+  id = "__timeout__"
+  width = $PARSED_CIRCULAR_PROGRESS_WIDTH
+  height = $PARSED_CIRCULAR_PROGRESS_WIDTH
+  left = $PARSED_CIRCULAR_PROGRESS_LEFT
+  top = $PARSED_CIRCULAR_PROGRESS_TOP
+  center_bitmap = "center.png"
+  tick_bitmap = "tick.png"
+  num_ticks = $CIRCULAR_PROGRESS_NUM_TICKS
+  ticks_disappear = $CIRCULAR_PROGRESS_TICKS_DISAPPEAR
+  start_angle = $CIRCULAR_PROGRESS_START_ANGLE
+}

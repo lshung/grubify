@@ -17,6 +17,7 @@ APP_UTILS_DIR="$APP_DIR"/utils
 APP_TEMPLATES_DIR="$APP_DIR"/templates
 APP_TEMPLATES_ICONS_DIR="$APP_TEMPLATES_DIR"/icons
 APP_TEMPLATES_SELECT_DIR="$APP_TEMPLATES_DIR"/select
+APP_TEMPLATES_CIRCULAR_PROGRESS_DIR="$APP_TEMPLATES_DIR"/circular-progress
 
 # Temporary directory
 TEMP_DIR="/tmp/$APP_NAME_LOWER"
@@ -109,3 +110,21 @@ PROGRESS_BAR_ALIGN="center"     # Alignment of progress bar
 PROGRESS_BAR_FOREGROUND_COLOR=""    # Foreground color of progress bar (leave empty to use THEME_ACCENT_COLOR)
 PROGRESS_BAR_BACKGROUND_COLOR=""    # Background color of progress bar (leave empty to use THEME_BACKGROUND_COLOR)
 PROGRESS_BAR_BORDER_COLOR=""        # Border color of progress bar (leave empty to use THEME_BACKGROUND_COLOR)
+
+# Circular progress
+CIRCULAR_PROGRESS_VISIBLE="no"              # Show or hide circular progress. Accepted values: 'yes' or 'no'
+CIRCULAR_PROGRESS_WIDTH=200                 # Width of circular progress in percentage or pixels. The height is the same as the width.
+CIRCULAR_PROGRESS_CENTER_X=50%              # The x position of circular progress center point in percentage or pixels
+CIRCULAR_PROGRESS_CENTER_Y=85%              # The y position of circular progress center point in percentage or pixels
+CIRCULAR_PROGRESS_NUM_TICKS=30              # Number of ticks that make up a full circle
+CIRCULAR_PROGRESS_TICKS_DISAPPEAR=false     # Whether tick marks should progressively appear, or progressively disappear
+CIRCULAR_PROGRESS_START_ANGLE=192           # Starting angle in parrots (0-left, 64-bottom, 128-right, 192-top)
+CIRCULAR_PROGRESS_CENTER_COLOR=""           # Color of center bitmap (leave empty to use THEME_BACKGROUND_COLOR, or 'none' for transparent)
+CIRCULAR_PROGRESS_TICK_COLOR=""             # Color of tick bitmap (leave empty to use THEME_ACCENT_COLOR)
+CIRCULAR_PROGRESS_TICK_SIZE=10              # Size of tick bitmap in pixels (width and height are the same)
+
+# Circular progress countdown
+CIRCULAR_PROGRESS_COUNTDOWN_VISIBLE="no"                    # Show or hide circular progress countdown. Accepted values: 'yes' or 'no'
+CIRCULAR_PROGRESS_COUNTDOWN_FONT_NAME="Unifont Regular"     # Accepted values: 'Unifont Regular'
+CIRCULAR_PROGRESS_COUNTDOWN_FONT_SIZE=100                   # Font size of countdown label, should be an even number (not odd number)
+CIRCULAR_PROGRESS_COUNTDOWN_COLOR=""                        # Text color of countdown label (leave empty to use THEME_ACCENT_COLOR)

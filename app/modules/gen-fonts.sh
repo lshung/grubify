@@ -77,6 +77,7 @@ parse_font_config_values() {
     add_font_size_to_array_if_not_exists "$ITEM_FONT_NAME" "$ITEM_FONT_SIZE"
     add_font_size_to_array_if_not_exists "$SELECTED_ITEM_FONT_NAME" "$SELECTED_ITEM_FONT_SIZE"
     add_font_size_to_array_if_not_exists "$COUNTDOWN_FONT_NAME" "$COUNTDOWN_FONT_SIZE"
+    add_font_size_to_array_if_not_exists "$CIRCULAR_PROGRESS_COUNTDOWN_FONT_NAME" "$CIRCULAR_PROGRESS_COUNTDOWN_FONT_SIZE"
 
     [[ "$VERBOSE" == "yes" ]] && log_ok "Parsed font config values successfully." || true
 }

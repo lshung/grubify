@@ -13,6 +13,8 @@ main() {
         check_required_commands_exist || return 1
     fi
 
+    set_default_config_values || { log_failed "Failed to set default config values."; return 1; }
+    parse_config_values || { log_failed "Failed to parse config values."; return 1; }
     remove_invisible_components_from_theme_txt || { log_failed "Failed to remove invisible components from 'theme.txt'."; return 1; }
     substitute_variables_in_theme_txt || { log_failed "Failed to substitute variables in theme.txt."; return 1; }
 
@@ -65,6 +67,39 @@ check_required_commands_exist() {
     [[ "$VERBOSE" == "yes" ]] && log_ok "All required commands exist." || true
 }
 
+set_default_config_values() {
+    log_info "Setting default config values..."
+
+    [ -z "$ITEM_COLOR" ] && ITEM_COLOR="$THEME_TEXT_COLOR" || true
+    [ -z "$SELECTED_ITEM_COLOR" ] && SELECTED_ITEM_COLOR="$THEME_BACKGROUND_COLOR" || true
+    [ -z "$COUNTDOWN_COLOR" ] && COUNTDOWN_COLOR="$THEME_TEXT_COLOR" || true
+    [ -z "$PROGRESS_BAR_FOREGROUND_COLOR" ] && PROGRESS_BAR_FOREGROUND_COLOR="$THEME_ACCENT_COLOR" || true
+    [ -z "$PROGRESS_BAR_BACKGROUND_COLOR" ] && PROGRESS_BAR_BACKGROUND_COLOR="$THEME_BACKGROUND_COLOR" || true
+    [ -z "$PROGRESS_BAR_BORDER_COLOR" ] && PROGRESS_BAR_BORDER_COLOR="$THEME_BACKGROUND_COLOR" || true
+    [ -z "$CIRCULAR_PROGRESS_COUNTDOWN_COLOR" ] && CIRCULAR_PROGRESS_COUNTDOWN_COLOR="$THEME_ACCENT_COLOR" || true
+
+    [[ "$VERBOSE" == "yes" ]] && log_ok "Set default config values successfully." || true
+}
+
+parse_config_values() {
+    log_info "Parsing config values..."
+
+    parse_grub_geometry "$CIRCULAR_PROGRESS_WIDTH" "$SCREEN_WIDTH" >/dev/null \
+        && PARSED_CIRCULAR_PROGRESS_WIDTH="$(parse_grub_geometry "$CIRCULAR_PROGRESS_WIDTH" "$SCREEN_WIDTH")" || return 1
+
+    parse_grub_geometry "$CIRCULAR_PROGRESS_CENTER_X" "$SCREEN_WIDTH" >/dev/null \
+        && PARSED_CIRCULAR_PROGRESS_CENTER_X="$(parse_grub_geometry "$CIRCULAR_PROGRESS_CENTER_X" "$SCREEN_WIDTH")" || return 1
+
+    parse_grub_geometry "$CIRCULAR_PROGRESS_CENTER_Y" "$SCREEN_HEIGHT" >/dev/null \
+        && PARSED_CIRCULAR_PROGRESS_CENTER_Y="$(parse_grub_geometry "$CIRCULAR_PROGRESS_CENTER_Y" "$SCREEN_HEIGHT")" || return 1
+
+    PARSED_CIRCULAR_PROGRESS_LEFT="$(( PARSED_CIRCULAR_PROGRESS_CENTER_X - (PARSED_CIRCULAR_PROGRESS_WIDTH / 2) ))"
+    PARSED_CIRCULAR_PROGRESS_TOP="$(( PARSED_CIRCULAR_PROGRESS_CENTER_Y - (PARSED_CIRCULAR_PROGRESS_WIDTH / 2) ))"
+    PARSED_CIRCULAR_PROGRESS_COUNTDOWN_TOP="$(( PARSED_CIRCULAR_PROGRESS_CENTER_Y - (CIRCULAR_PROGRESS_COUNTDOWN_FONT_SIZE / 2) ))"
+
+    [[ "$VERBOSE" == "yes" ]] && log_ok "Parsed config values successfully." || true
+}
+
 remove_invisible_components_from_theme_txt() {
     log_info "Removing invisible components from 'theme.txt'..."
 
@@ -78,6 +113,15 @@ remove_invisible_components_from_theme_txt() {
 
     if [[ "$COUNTDOWN_VISIBLE" == "no" ]]; then
         remove_label_block_with_search_pattern "\\\$COUNTDOWN_" || return 1
+    fi
+
+    if [[ "$CIRCULAR_PROGRESS_VISIBLE" == "no" ]]; then
+        awk '/^+ circular_progress {/{f=1} !f; /^}/&&f{f=0}' "$TEMP_DIR/theme.txt" > "$TEMP_DIR/theme.tmp"
+        mv "$TEMP_DIR/theme.tmp" "$TEMP_DIR/theme.txt"
+    fi
+
+    if [[ "$CIRCULAR_PROGRESS_COUNTDOWN_VISIBLE" == "no" ]]; then
+        remove_label_block_with_search_pattern "\\\$CIRCULAR_PROGRESS_COUNTDOWN_" || return 1
     fi
 
     [[ "$VERBOSE" == "yes" ]] && log_ok "Removed invisible components from 'theme.txt' successfully." || true
@@ -111,6 +155,10 @@ substitute_variables_in_theme_txt() {
     export COUNTDOWN_LEFT COUNTDOWN_TOP COUNTDOWN_ALIGN COUNTDOWN_COLOR
     export PROGRESS_BAR_WIDTH PROGRESS_BAR_LEFT PROGRESS_BAR_TOP PROGRESS_BAR_HEIGHT
     export PROGRESS_BAR_ALIGN PROGRESS_BAR_FOREGROUND_COLOR PROGRESS_BAR_BACKGROUND_COLOR PROGRESS_BAR_BORDER_COLOR
+    export PARSED_CIRCULAR_PROGRESS_WIDTH PARSED_CIRCULAR_PROGRESS_LEFT PARSED_CIRCULAR_PROGRESS_TOP
+    export CIRCULAR_PROGRESS_NUM_TICKS CIRCULAR_PROGRESS_TICKS_DISAPPEAR CIRCULAR_PROGRESS_START_ANGLE
+    export CIRCULAR_PROGRESS_COUNTDOWN_FONT_NAME CIRCULAR_PROGRESS_COUNTDOWN_FONT_SIZE
+    export CIRCULAR_PROGRESS_COUNTDOWN_COLOR PARSED_CIRCULAR_PROGRESS_COUNTDOWN_TOP
 
     envsubst < "$TEMP_DIR/theme.txt" > "$TEMP_DIR/theme.tmp"
     mv "$TEMP_DIR/theme.tmp" "$TEMP_DIR/theme.txt"

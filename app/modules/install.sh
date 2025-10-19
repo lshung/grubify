@@ -11,6 +11,7 @@ main() {
     clean_temporary_directory || { log_failed "Failed to clean temporary directory."; return 1; }
     call_module_generate_background || return 1
     generate_selected_item_pixmap || { log_failed "Failed to generate selected item pixmap."; return 1; }
+    generate_circular_progress_pixmap || { log_failed "Failed to generate circular progress pixmap."; return 1; }
     generate_menu_item_icons || { log_failed "Failed to generate menu item icons."; return 1; }
     call_module_generate_fonts || return 1
     call_module_generate_theme_file || return 1
@@ -79,16 +80,12 @@ declare_variables() {
 
     GRUB_THEME_DIR="$GRUB_THEMES_DIR/$APP_NAME_LOWER"
 
-    [[ "$VERBOSE" == "yes" ]] && log_info "Setting default config values..." || true
+    parse_grub_geometry "$CIRCULAR_PROGRESS_WIDTH" "$SCREEN_WIDTH" >/dev/null \
+        && PARSED_CIRCULAR_PROGRESS_WIDTH="$(parse_grub_geometry "$CIRCULAR_PROGRESS_WIDTH" "$SCREEN_WIDTH")" || return 1
 
-    [ -z "$CONTAINER_COLOR" ] && CONTAINER_COLOR="$THEME_BACKGROUND_COLOR" || true
-    [ -z "$ITEM_COLOR" ] && ITEM_COLOR="$THEME_TEXT_COLOR" || true
-    [ -z "$SELECTED_ITEM_COLOR" ] && SELECTED_ITEM_COLOR="$THEME_BACKGROUND_COLOR" || true
     [ -z "$SELECTED_ITEM_BACKGROUND_COLOR" ] && SELECTED_ITEM_BACKGROUND_COLOR="$THEME_ACCENT_COLOR" || true
-    [ -z "$COUNTDOWN_COLOR" ] && COUNTDOWN_COLOR="$THEME_TEXT_COLOR" || true
-    [ -z "$PROGRESS_BAR_FOREGROUND_COLOR" ] && PROGRESS_BAR_FOREGROUND_COLOR="$THEME_ACCENT_COLOR" || true
-    [ -z "$PROGRESS_BAR_BACKGROUND_COLOR" ] && PROGRESS_BAR_BACKGROUND_COLOR="$THEME_BACKGROUND_COLOR" || true
-    [ -z "$PROGRESS_BAR_BORDER_COLOR" ] && PROGRESS_BAR_BORDER_COLOR="$THEME_BACKGROUND_COLOR" || true
+    [ -z "$CIRCULAR_PROGRESS_CENTER_COLOR" ] && CIRCULAR_PROGRESS_CENTER_COLOR="$THEME_BACKGROUND_COLOR" || true
+    [ -z "$CIRCULAR_PROGRESS_TICK_COLOR" ] && CIRCULAR_PROGRESS_TICK_COLOR="$THEME_ACCENT_COLOR" || true
 
     [[ "$VERBOSE" == "yes" ]] && log_ok "Declared variables successfully." || true
 }
@@ -121,6 +118,20 @@ generate_selected_item_pixmap() {
     [[ "$VERBOSE" == "yes" ]] && log_ok "Generated selected item pixmap successfully." || true
 }
 
+generate_circular_progress_pixmap() {
+    log_info "Generating circular progress pixmap..."
+
+    cp "$APP_TEMPLATES_CIRCULAR_PROGRESS_DIR"/*.svg "$TEMP_DIR"/ || return 1
+
+    sed -i "s/fill=\".*\"/fill=\"$CIRCULAR_PROGRESS_CENTER_COLOR\"/g" "$TEMP_DIR/center.svg" || return 1
+    sed -i "s/fill=\".*\"/fill=\"$CIRCULAR_PROGRESS_TICK_COLOR\"/g" "$TEMP_DIR/tick.svg" || return 1
+
+    rsvg-convert -d 1000 -w "$PARSED_CIRCULAR_PROGRESS_WIDTH" "$TEMP_DIR/center.svg" -o "$TEMP_DIR/center.png" || return 1
+    rsvg-convert -d 1000 -w "$CIRCULAR_PROGRESS_TICK_SIZE" "$TEMP_DIR/tick.svg" -o "$TEMP_DIR/tick.png" || return 1
+
+    [[ "$VERBOSE" == "yes" ]] && log_ok "Generated circular progress pixmap successfully." || true
+}
+
 generate_menu_item_icons() {
     log_info "Generating menu item icons..."
 
@@ -148,6 +159,8 @@ copy_assets_to_theme_dir() {
     sudo cp "$TEMP_DIR/theme.txt" "$GRUB_THEME_DIR"/
     sudo cp "$TEMP_DIR/background.png" "$GRUB_THEME_DIR"/
     sudo cp "$TEMP_DIR"/select_*.png "$GRUB_THEME_DIR"/
+    sudo cp "$TEMP_DIR"/center.png "$GRUB_THEME_DIR"/
+    sudo cp "$TEMP_DIR"/tick.png "$GRUB_THEME_DIR"/
     sudo cp -r "$TEMP_DIR/icons" "$GRUB_THEME_DIR"/
     sudo cp "$TEMP_DIR/fonts"/*.pf2 "$GRUB_THEME_DIR"/ || true
 
