@@ -128,3 +128,8 @@ CIRCULAR_PROGRESS_COUNTDOWN_VISIBLE="no"                    # Show or hide circu
 CIRCULAR_PROGRESS_COUNTDOWN_FONT_NAME="Unifont Regular"     # Accepted values: 'Unifont Regular'
 CIRCULAR_PROGRESS_COUNTDOWN_FONT_SIZE=100                   # Font size of countdown label, should be an even number (not odd number)
 CIRCULAR_PROGRESS_COUNTDOWN_COLOR=""                        # Text color of countdown label (leave empty to use THEME_ACCENT_COLOR)
+
+# Circular progress image
+CIRCULAR_PROGRESS_IMAGE_VISIBLE="no"    # Show or hide circular progress's center image. Accepted values: 'yes' or 'no'
+CIRCULAR_PROGRESS_IMAGE_WIDTH=160       # Width of center image in percentage or pixels. The height is the same as the width.
+CIRCULAR_PROGRESS_IMAGE_FILE=""         # File path of center image (can use icons from supported icon themes, e.g. just set 'icons/papirus/arch.svg'). Accepted extensions: .svg, .png (.svg will be converted to .png)

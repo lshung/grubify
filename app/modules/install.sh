@@ -11,7 +11,7 @@ main() {
     clean_temporary_directory || { log_failed "Failed to clean temporary directory."; return 1; }
     call_module_generate_background || return 1
     generate_selected_item_pixmap || { log_failed "Failed to generate selected item pixmap."; return 1; }
-    generate_circular_progress_pixmap || { log_failed "Failed to generate circular progress pixmap."; return 1; }
+    generate_circular_progress_assets || { log_failed "Failed to generate circular progress assets."; return 1; }
     generate_menu_item_icons || { log_failed "Failed to generate menu item icons."; return 1; }
     call_module_generate_fonts || return 1
     call_module_generate_theme_file || return 1
@@ -83,6 +83,9 @@ declare_variables() {
     parse_grub_geometry "$CIRCULAR_PROGRESS_WIDTH" "$SCREEN_WIDTH" >/dev/null \
         && PARSED_CIRCULAR_PROGRESS_WIDTH="$(parse_grub_geometry "$CIRCULAR_PROGRESS_WIDTH" "$SCREEN_WIDTH")" || return 1
 
+    parse_grub_geometry "$CIRCULAR_PROGRESS_IMAGE_WIDTH" "$SCREEN_WIDTH" >/dev/null \
+        && PARSED_CIRCULAR_PROGRESS_IMAGE_WIDTH="$(parse_grub_geometry "$CIRCULAR_PROGRESS_IMAGE_WIDTH" "$SCREEN_WIDTH")" || return 1
+
     [ -z "$SELECTED_ITEM_BACKGROUND_COLOR" ] && SELECTED_ITEM_BACKGROUND_COLOR="$THEME_ACCENT_COLOR" || true
     [ -z "$CIRCULAR_PROGRESS_CENTER_COLOR" ] && CIRCULAR_PROGRESS_CENTER_COLOR="$THEME_BACKGROUND_COLOR" || true
     [ -z "$CIRCULAR_PROGRESS_TICK_COLOR" ] && CIRCULAR_PROGRESS_TICK_COLOR="$THEME_ACCENT_COLOR" || true
@@ -118,18 +121,45 @@ generate_selected_item_pixmap() {
     [[ "$VERBOSE" == "yes" ]] && log_ok "Generated selected item pixmap successfully." || true
 }
 
-generate_circular_progress_pixmap() {
-    log_info "Generating circular progress pixmap..."
+generate_circular_progress_assets() {
+    if [[ "$CIRCULAR_PROGRESS_VISIBLE" == "yes" ]]; then
+        log_info "Generating circular progress assets..."
 
-    cp "$APP_TEMPLATES_CIRCULAR_PROGRESS_DIR"/*.svg "$TEMP_DIR"/ || return 1
+        cp "$APP_TEMPLATES_CIRCULAR_PROGRESS_DIR"/*.svg "$TEMP_DIR"/ || return 1
 
-    sed -i "s/fill=\".*\"/fill=\"$CIRCULAR_PROGRESS_CENTER_COLOR\"/g" "$TEMP_DIR/center.svg" || return 1
-    sed -i "s/fill=\".*\"/fill=\"$CIRCULAR_PROGRESS_TICK_COLOR\"/g" "$TEMP_DIR/tick.svg" || return 1
+        sed -i "s/fill=\".*\"/fill=\"$CIRCULAR_PROGRESS_CENTER_COLOR\"/g" "$TEMP_DIR/center.svg" || return 1
+        sed -i "s/fill=\".*\"/fill=\"$CIRCULAR_PROGRESS_TICK_COLOR\"/g" "$TEMP_DIR/tick.svg" || return 1
 
-    rsvg-convert -d 1000 -w "$PARSED_CIRCULAR_PROGRESS_WIDTH" "$TEMP_DIR/center.svg" -o "$TEMP_DIR/center.png" || return 1
-    rsvg-convert -d 1000 -w "$CIRCULAR_PROGRESS_TICK_SIZE" "$TEMP_DIR/tick.svg" -o "$TEMP_DIR/tick.png" || return 1
+        rsvg-convert -d 1000 -w "$PARSED_CIRCULAR_PROGRESS_WIDTH" "$TEMP_DIR/center.svg" -o "$TEMP_DIR/center.png" || return 1
+        rsvg-convert -d 1000 -w "$CIRCULAR_PROGRESS_TICK_SIZE" "$TEMP_DIR/tick.svg" -o "$TEMP_DIR/tick.png" || return 1
 
-    [[ "$VERBOSE" == "yes" ]] && log_ok "Generated circular progress pixmap successfully." || true
+        generate_circular_progress_image
+
+        [[ "$VERBOSE" == "yes" ]] && log_ok "Generated circular progress assets successfully." || true
+    fi
+}
+
+generate_circular_progress_image() {
+    if [[ "$CIRCULAR_PROGRESS_IMAGE_VISIBLE" == "yes" ]]; then
+        [[ "$VERBOSE" == "yes" ]] && log_info "Generating circular progress image..." || true
+
+        if [[ "$CIRCULAR_PROGRESS_IMAGE_FILE" =~ ^icons/(.*)/(.*)\.svg$ ]]; then
+            CIRCULAR_PROGRESS_IMAGE_FILE="$APP_TEMPLATES_ICONS_DIR/${BASH_REMATCH[1]}/${BASH_REMATCH[2]}.svg"
+        fi
+
+        [[ -f "$CIRCULAR_PROGRESS_IMAGE_FILE" ]] || { log_error "Circular progress image file '$CIRCULAR_PROGRESS_IMAGE_FILE' not found."; return 1; }
+
+        if [[ "$CIRCULAR_PROGRESS_IMAGE_FILE" =~ ^(.*)\.svg$ ]]; then
+            rsvg-convert -d 1000 -w "$PARSED_CIRCULAR_PROGRESS_IMAGE_WIDTH" "$CIRCULAR_PROGRESS_IMAGE_FILE" -o "$TEMP_DIR/image.png" || return 1
+        elif [[ "$CIRCULAR_PROGRESS_IMAGE_FILE" =~ ^(.*)\.png$ ]]; then
+            cp "$CIRCULAR_PROGRESS_IMAGE_FILE" "$TEMP_DIR/image.png" || return 1
+        else
+            log_error "Invalid circular progress image extension (accepted extensions: .svg, .png)."
+            return 1
+        fi
+
+        [[ "$VERBOSE" == "yes" ]] && log_ok "Generated circular progress image successfully." || true
+    fi
 }
 
 generate_menu_item_icons() {
@@ -161,6 +191,7 @@ copy_assets_to_theme_dir() {
     sudo cp "$TEMP_DIR"/select_*.png "$GRUB_THEME_DIR"/
     sudo cp "$TEMP_DIR"/center.png "$GRUB_THEME_DIR"/
     sudo cp "$TEMP_DIR"/tick.png "$GRUB_THEME_DIR"/
+    sudo cp "$TEMP_DIR"/image.png "$GRUB_THEME_DIR"/
     sudo cp -r "$TEMP_DIR/icons" "$GRUB_THEME_DIR"/
     sudo cp "$TEMP_DIR/fonts"/*.pf2 "$GRUB_THEME_DIR"/ || true
 

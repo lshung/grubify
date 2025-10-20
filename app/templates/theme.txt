@@ -61,6 +61,14 @@ terminal-border: "0"
   font = "$CIRCULAR_PROGRESS_COUNTDOWN_FONT_NAME $CIRCULAR_PROGRESS_COUNTDOWN_FONT_SIZE"
 }
 
++ image {
+  width = $PARSED_CIRCULAR_PROGRESS_IMAGE_WIDTH
+  height = $PARSED_CIRCULAR_PROGRESS_IMAGE_WIDTH
+  left = $PARSED_CIRCULAR_PROGRESS_IMAGE_LEFT
+  top = $PARSED_CIRCULAR_PROGRESS_IMAGE_TOP
+  file = "image.png"
+}
+
 + circular_progress {
   id = "__timeout__"
   width = $PARSED_CIRCULAR_PROGRESS_WIDTH
