@@ -9,6 +9,7 @@ main() {
     source_utility_functions
     create_symlink_to_this_app
     set_grub_themes_dir || return 1
+    check_required_commands_exist || return 1
     parse_arguments "$@"
 }
 
@@ -45,6 +46,14 @@ set_grub_themes_dir() {
     GRUB_THEME_DIR="$(get_grub_themes_dir)/$APP_NAME_LOWER"
 }
 
+check_required_commands_exist() {
+    check_commands_exist "grub-mkfont" "envsubst" "tar" || return 1
+    check_command_exists "ffmpeg" || return 1
+    check_command_exists "rsvg-convert" || return 1
+    check_one_of_commands_exists "curl" "wget" || { log_error "Command 'curl' or 'wget' not found."; return 1; }
+    check_one_of_commands_exists "update-grub" "grub-mkconfig" "grub2-mkconfig" || { log_error "Command 'update-grub', 'grub-mkconfig' or 'grub2-mkconfig' not found."; return 1; }
+}
+
 parse_arguments() {
     if [[ $# -eq 0 ]]; then
         show_usage
@@ -62,6 +71,9 @@ parse_arguments() {
                 ;;
             gen-background)
                 source "$APP_MODULES_DIR/gen-background.sh" "$@"
+                ;;
+            gen-distro-icons)
+                source "$APP_MODULES_DIR/gen-distro-icons.sh" "$@"
                 ;;
             gen-fonts)
                 source "$APP_MODULES_DIR/gen-fonts.sh" "$@"
@@ -92,6 +104,7 @@ show_usage() {
     echo ""
     echo "Commands:"
     echo "    gen-background        Generate background image only"
+    echo "    gen-distro-icons      Generate distro icons only"
     echo "    gen-fonts             Generate fonts only"
     echo "    gen-theme-file        Generate file 'theme.txt' only"
     echo "    install               Install theme"

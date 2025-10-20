@@ -6,13 +6,12 @@ set -euo pipefail
 
 main() {
     parse_arguments "$@" || return 1
-    check_required_commands_exist || return 1
     declare_variables || { log_failed "Failed to declare variables."; return 1; }
     clean_temporary_directory || { log_failed "Failed to clean temporary directory."; return 1; }
     call_module_generate_background || return 1
     generate_selected_item_pixmap || { log_failed "Failed to generate selected item pixmap."; return 1; }
     generate_circular_progress_assets || { log_failed "Failed to generate circular progress assets."; return 1; }
-    generate_menu_item_icons || { log_failed "Failed to generate menu item icons."; return 1; }
+    call_module_generate_distro_icons || return 1
     call_module_generate_fonts || return 1
     call_module_generate_theme_file || return 1
     copy_assets_to_theme_dir || { log_failed "Failed to copy assets to theme directory."; return 1; }
@@ -55,18 +54,6 @@ show_usage() {
     echo "Options:"
     echo "    -h, --help        Show help"
     echo "    -v, --verbose     Verbose output"
-}
-
-check_required_commands_exist() {
-    log_info "Checking required commands exist..."
-
-    check_commands_exist "grub-mkfont" "envsubst" "tar" || return 1
-    check_command_exists "ffmpeg" || return 1
-    check_command_exists "rsvg-convert" || return 1
-    check_one_of_commands_exists "curl" "wget" || { log_error "Command 'curl' or 'wget' not found."; return 1; }
-    check_one_of_commands_exists "update-grub" "grub-mkconfig" "grub2-mkconfig" || { log_error "Command 'update-grub', 'grub-mkconfig' or 'grub2-mkconfig' not found."; return 1; }
-
-    [[ "$VERBOSE" == "yes" ]] && log_ok "All required commands exist." || true
 }
 
 declare_variables() {
@@ -154,14 +141,8 @@ generate_circular_progress_image() {
     fi
 }
 
-generate_menu_item_icons() {
-    log_info "Generating menu item icons..."
-
-    for file in "$APP_TEMPLATES_ICONS_DIR/$ICON_THEME"/*.svg; do
-        rsvg-convert -d 1000 -w "$ICON_SIZE" -h "$ICON_SIZE" "$file" -o "$TEMP_DIR/icons/$(basename "$file" .svg).png" || return 1
-    done
-
-    [[ "$VERBOSE" == "yes" ]] && log_ok "Generated menu item icons successfully." || true
+call_module_generate_distro_icons() {
+    source "$APP_MODULES_DIR/gen-distro-icons.sh" || return 1
 }
 
 call_module_generate_fonts() {

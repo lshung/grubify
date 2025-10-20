@@ -10,7 +10,6 @@ main() {
     if [[ "${1:-}" == "gen-fonts" ]]; then
         IS_SOURCED="no"
         parse_arguments "$@" || return 1
-        check_required_commands_exist || return 1
     fi
 
     parse_font_config_values || { log_failed "Failed to parse font config values."; return 1; }
@@ -55,15 +54,6 @@ show_usage() {
     echo "Options:"
     echo "    -h, --help        Show help"
     echo "    -v, --verbose     Verbose output"
-}
-
-check_required_commands_exist() {
-    log_info "Checking required commands exist..."
-
-    check_command_exists "grub-mkfont" || return 1
-    check_one_of_commands_exists "curl" "wget" || { log_error "Command 'curl' or 'wget' not found."; return 1; }
-
-    [[ "$VERBOSE" == "yes" ]] && log_ok "All required commands exist." || true
 }
 
 parse_font_config_values() {

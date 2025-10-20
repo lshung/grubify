@@ -10,7 +10,6 @@ main() {
     if [[ "${1:-}" == "gen-background" ]]; then
         IS_SOURCED="no"
         parse_arguments "$@" || return 1
-        check_required_commands_exist || return 1
     fi
 
     set_default_config_values || { log_failed "Failed to set default config values."; return 1; }
@@ -56,15 +55,6 @@ show_usage() {
     echo "Options:"
     echo "    -h, --help        Show help"
     echo "    -v, --verbose     Verbose output"
-}
-
-check_required_commands_exist() {
-    log_info "Checking required commands exist..."
-
-    check_command_exists "ffmpeg" || return 1
-    check_one_of_commands_exists "curl" "wget" || { log_error "Command 'curl' or 'wget' not found."; return 1; }
-
-    [[ "$VERBOSE" == "yes" ]] && log_ok "All required commands exist." || true
 }
 
 set_default_config_values() {
