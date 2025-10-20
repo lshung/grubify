@@ -72,6 +72,9 @@ parse_arguments() {
             gen-background)
                 source "$APP_MODULES_DIR/gen-background.sh" "$@"
                 ;;
+            gen-circular-progress)
+                source "$APP_MODULES_DIR/gen-circular-progress.sh" "$@"
+                ;;
             gen-distro-icons)
                 source "$APP_MODULES_DIR/gen-distro-icons.sh" "$@"
                 ;;
@@ -103,17 +106,18 @@ show_usage() {
     echo "Usage: $APP_NAME_LOWER [COMMAND|OPTION]"
     echo ""
     echo "Commands:"
-    echo "    gen-background        Generate background image only"
-    echo "    gen-distro-icons      Generate distro icons only"
-    echo "    gen-fonts             Generate fonts only"
-    echo "    gen-theme-file        Generate file 'theme.txt' only"
-    echo "    install               Install theme"
-    echo "    menu-valign-center    Vertically center menu items within container."
-    echo "    remove                Remove theme"
+    echo "    gen-background            Generate background image only"
+    echo "    gen-circular-progress     Generate circular progress assets only"
+    echo "    gen-distro-icons          Generate distro icons only"
+    echo "    gen-fonts                 Generate fonts only"
+    echo "    gen-theme-file            Generate file 'theme.txt' only"
+    echo "    install                   Install theme"
+    echo "    menu-valign-center        Vertically center menu items within container."
+    echo "    remove                    Remove theme"
     echo ""
     echo "Options:"
-    echo "    -h, --help            Show help"
-    echo "    -v, --version         Show version"
+    echo "    -h, --help                Show help"
+    echo "    -v, --version             Show version"
 }
 
 main "$@"
