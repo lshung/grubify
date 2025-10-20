@@ -6,18 +6,17 @@ set -euo pipefail
 
 main() {
     parse_arguments "$@" || return 1
-    declare_variables || { log_failed "Failed to declare variables."; return 1; }
     clean_temporary_directory || { log_failed "Failed to clean temporary directory."; return 1; }
-    call_module_generate_background || return 1
-    generate_selected_item_pixmap || { log_failed "Failed to generate selected item pixmap."; return 1; }
-    call_module_generate_circular_progress || return 1
-    call_module_generate_distro_icons || return 1
-    call_module_generate_fonts || return 1
-    call_module_generate_theme_file || return 1
+    source "$APP_MODULES_DIR/gen-background.sh" || return 1
+    source "$APP_MODULES_DIR/gen-selected-item.sh" || return 1
+    source "$APP_MODULES_DIR/gen-distro-icons.sh" || return 1
+    source "$APP_MODULES_DIR/gen-fonts.sh" || return 1
+    source "$APP_MODULES_DIR/gen-theme-file.sh" || return 1
+    [[ "$CIRCULAR_PROGRESS_VISIBLE" == "yes" ]] && { source "$APP_MODULES_DIR/gen-circular-progress.sh" || return 1; } || true
     copy_assets_to_theme_dir || { log_failed "Failed to copy assets to theme directory."; return 1; }
     edit_file_etc_default_grub || { log_failed "Failed to edit file '/etc/default/grub'."; return 1; }
     update_grub_configuration || { log_failed "Failed to update GRUB configuration."; return 1; }
-    call_module_menu_valign_center || return 1
+    [[ "$MENU_VALIGN_CENTER" == "yes" ]] && { source "$APP_MODULES_DIR/menu-valign-center.sh" || return 1; } || true
     cleanup || { log_failed "Failed to cleanup."; return 1; }
 
     log_ok "Done."
@@ -56,58 +55,13 @@ show_usage() {
     echo "    -v, --verbose     Verbose output"
 }
 
-declare_variables() {
-    log_info "Declaring variables..."
-
-    [ -z "$SELECTED_ITEM_BACKGROUND_COLOR" ] && SELECTED_ITEM_BACKGROUND_COLOR="$THEME_ACCENT_COLOR" || true
-
-    [[ "$VERBOSE" == "yes" ]] && log_ok "Declared variables successfully." || true
-}
-
 clean_temporary_directory() {
     log_info "Cleaning temporary directory..."
 
     rm -rf "$TEMP_DIR"/{*,.[!.]*}
     mkdir -p "$TEMP_DIR"
-    mkdir -p "$TEMP_DIR/icons"
-    mkdir -p "$TEMP_DIR/fonts"
 
     [[ "$VERBOSE" == "yes" ]] && log_ok "Cleaned temporary directory successfully." || true
-}
-
-call_module_generate_background() {
-    source "$APP_MODULES_DIR/gen-background.sh" || return 1
-}
-
-generate_selected_item_pixmap() {
-    log_info "Generating selected item pixmap..."
-
-    cp "$APP_TEMPLATES_SELECT_DIR"/select_*.svg "$TEMP_DIR"/ || return 1
-
-    for file_name in "select_c" "select_w" "select_e"; do
-        sed -i "s/fill=\".*\"/fill=\"$SELECTED_ITEM_BACKGROUND_COLOR\"/g" "$TEMP_DIR/$file_name.svg" || return 1
-        rsvg-convert -d 1000 -h "$ITEM_HEIGHT" "$TEMP_DIR/$file_name.svg" -o "$TEMP_DIR/$file_name.png" || return 1
-    done
-
-    [[ "$VERBOSE" == "yes" ]] && log_ok "Generated selected item pixmap successfully." || true
-}
-
-call_module_generate_circular_progress() {
-    if [[ "$CIRCULAR_PROGRESS_VISIBLE" == "yes" ]]; then
-        source "$APP_MODULES_DIR/gen-circular-progress.sh" || return 1
-    fi
-}
-
-call_module_generate_distro_icons() {
-    source "$APP_MODULES_DIR/gen-distro-icons.sh" || return 1
-}
-
-call_module_generate_fonts() {
-    source "$APP_MODULES_DIR/gen-fonts.sh" || return 1
-}
-
-call_module_generate_theme_file() {
-    source "$APP_MODULES_DIR/gen-theme-file.sh" || return 1
 }
 
 copy_assets_to_theme_dir() {
@@ -119,11 +73,12 @@ copy_assets_to_theme_dir() {
     sudo cp "$TEMP_DIR/theme.txt" "$GRUB_THEME_DIR"/ || return 1
     sudo cp "$TEMP_DIR/background.png" "$GRUB_THEME_DIR"/ || return 1
     sudo cp "$TEMP_DIR"/select_*.png "$GRUB_THEME_DIR"/ || return 1
+    sudo cp -r "$TEMP_DIR/icons" "$GRUB_THEME_DIR"/ || return 1
+    sudo cp "$TEMP_DIR/fonts"/*.pf2 "$GRUB_THEME_DIR"/ || return 1
+
     [[ -f "$TEMP_DIR"/center.png ]] && { sudo cp "$TEMP_DIR"/center.png "$GRUB_THEME_DIR"/ || return 1; } || true
     [[ -f "$TEMP_DIR"/tick.png ]] && { sudo cp "$TEMP_DIR"/tick.png "$GRUB_THEME_DIR"/ || return 1; } || true
     [[ -f "$TEMP_DIR"/image.png ]] && { sudo cp "$TEMP_DIR"/image.png "$GRUB_THEME_DIR"/ || return 1; } || true
-    sudo cp -r "$TEMP_DIR/icons" "$GRUB_THEME_DIR"/ || return 1
-    sudo cp "$TEMP_DIR/fonts"/*.pf2 "$GRUB_THEME_DIR"/ || return 1
 
     [[ "$VERBOSE" == "yes" ]] && log_ok "Copied assets to theme directory successfully." || true
 }
@@ -155,12 +110,6 @@ update_grub_configuration() {
     update_grub_config >/dev/null 2>&1 || return 1
 
     [[ "$VERBOSE" == "yes" ]] && log_ok "Updated GRUB configuration successfully." || true
-}
-
-call_module_menu_valign_center() {
-    if [[ "$MENU_VALIGN_CENTER" == "yes" ]]; then
-        source "$APP_MODULES_DIR/menu-valign-center.sh" || return 1
-    fi
 }
 
 cleanup() {

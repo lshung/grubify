@@ -81,6 +81,9 @@ parse_arguments() {
             gen-fonts)
                 source "$APP_MODULES_DIR/gen-fonts.sh" "$@"
                 ;;
+            gen-selected-item)
+                source "$APP_MODULES_DIR/gen-selected-item.sh" "$@"
+                ;;
             gen-theme-file)
                 source "$APP_MODULES_DIR/gen-theme-file.sh" "$@"
                 ;;
@@ -110,6 +113,7 @@ show_usage() {
     echo "    gen-circular-progress     Generate circular progress assets only"
     echo "    gen-distro-icons          Generate distro icons only"
     echo "    gen-fonts                 Generate fonts only"
+    echo "    gen-selected-item         Generate selected item assets only"
     echo "    gen-theme-file            Generate file 'theme.txt' only"
     echo "    install                   Install theme"
     echo "    menu-valign-center        Vertically center menu items within container."
