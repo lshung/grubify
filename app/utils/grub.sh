@@ -15,6 +15,7 @@ get_grub_themes_dir() {
         return 0
     fi
 
+    log_error "No GRUB themes directory found at '/boot/grub/themes' or '/boot/grub2/themes'."
     return 1
 }
 
@@ -59,4 +60,39 @@ uncomment_setting_in_etc_default_grub() {
     if grep -E "^#\\s*$key=" "$file" >/dev/null 2>&1; then
         sudo sed -i "s|^#\\s*$key=\(.*\)|$key=\\1|g" "$file" || { log_error "Failed to uncomment '$key' in '$file'"; return 1; }
     fi
+}
+
+get_grub_config_file() {
+    if [[ -f /boot/grub/grub.cfg ]]; then
+        echo "/boot/grub/grub.cfg"
+        return 0
+    fi
+
+    if [[ -f /boot/grub2/grub.cfg ]]; then
+        echo "/boot/grub2/grub.cfg"
+        return 0
+    fi
+
+    log_error "No GRUB config file found at '/boot/grub/grub.cfg' or '/boot/grub2/grub.cfg'."
+    return 1
+}
+
+get_grub_menu_entries() {
+    get_grub_config_file >/dev/null || return 1
+
+    local grub_config_file="$(get_grub_config_file)"
+
+    awk '
+        /^menuentry \x27/ {
+            match($0, /^menuentry \x27([^\x27]*)\x27/, arr);
+            print arr[1];
+            next
+        }
+        /^submenu \x27/ {
+            match($0, /^submenu \x27([^\x27]*)\x27/, arr);
+            print arr[1];
+            next
+        }
+        /\s*menuentry \x27UEFI Firmware Settings\x27/ { print "UEFI Firmware Settings" }
+    ' "$grub_config_file" || { log_error "Cannot get GRUB menu entries."; return 1; }
 }

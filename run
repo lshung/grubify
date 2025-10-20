@@ -8,6 +8,7 @@ main() {
     source_app_config_if_exists
     source_utility_functions
     create_symlink_to_this_app
+    set_grub_themes_dir || return 1
     parse_arguments "$@"
 }
 
@@ -38,6 +39,12 @@ create_symlink_to_this_app() {
     fi
 }
 
+set_grub_themes_dir() {
+    get_grub_themes_dir >/dev/null || return 1
+
+    GRUB_THEME_DIR="$(get_grub_themes_dir)/$APP_NAME_LOWER"
+}
+
 parse_arguments() {
     if [[ $# -eq 0 ]]; then
         show_usage
@@ -65,6 +72,9 @@ parse_arguments() {
             install)
                 source "$APP_MODULES_DIR/install.sh" "$@"
                 ;;
+            menu-valign-center)
+                source "$APP_MODULES_DIR/menu-valign-center.sh" "$@"
+                ;;
             remove)
                 source "$APP_MODULES_DIR/remove.sh" "$@"
                 ;;
@@ -81,15 +91,16 @@ show_usage() {
     echo "Usage: $APP_NAME_LOWER [COMMAND|OPTION]"
     echo ""
     echo "Commands:"
-    echo "    gen-background    Generate background image only"
-    echo "    gen-fonts         Generate fonts only"
-    echo "    gen-theme-file    Generate file 'theme.txt' only"
-    echo "    install           Install theme"
-    echo "    remove            Remove theme"
+    echo "    gen-background        Generate background image only"
+    echo "    gen-fonts             Generate fonts only"
+    echo "    gen-theme-file        Generate file 'theme.txt' only"
+    echo "    install               Install theme"
+    echo "    menu-valign-center    Vertically center menu items within container."
+    echo "    remove                Remove theme"
     echo ""
     echo "Options:"
-    echo "    -h, --help        Show help"
-    echo "    -v, --version     Show version"
+    echo "    -h, --help            Show help"
+    echo "    -v, --version         Show version"
 }
 
 main "$@"

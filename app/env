@@ -64,10 +64,11 @@ TERMINAL_FONT_NAME="Terminus Regular"       # Accepted values: 'Terminus Regular
 TERMINAL_FONT_SIZE=14                       # 12|14|16|18|20|22|24|28|32 for Terminus and 16|18|20|22|24|26|28|30|32 for Unifont
 
 # Menu
-MENU_WIDTH=30%      # Width of menu in percentage or pixels
-MENU_HEIGHT=30%     # Height of menu in percentage or pixels
-MENU_LEFT=35%       # Left position of menu in percentage or pixels
-MENU_TOP=35%        # Top position of menu in percentage or pixels
+MENU_WIDTH=30%              # Width of menu in percentage or pixels
+MENU_HEIGHT=30%             # Height of menu in percentage or pixels
+MENU_LEFT=35%               # Left position of menu in percentage or pixels
+MENU_TOP=35%                # Top position of menu in percentage or pixels
+MENU_VALIGN_CENTER="no"     # Vertically center menu items within container. If set to 'yes', MENU_HEIGHT and MENU_TOP will be ignored.
 
 # Menu items
 ITEM_FONT_NAME="Unifont Regular"            # Accepted values: 'Terminus Regular', 'Terminus Bold', or 'Unifont Regular'

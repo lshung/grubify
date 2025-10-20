@@ -18,6 +18,7 @@ main() {
     copy_assets_to_theme_dir || { log_failed "Failed to copy assets to theme directory."; return 1; }
     edit_file_etc_default_grub || { log_failed "Failed to edit file '/etc/default/grub'."; return 1; }
     update_grub_configuration || { log_failed "Failed to update GRUB configuration."; return 1; }
+    call_module_menu_valign_center || return 1
     cleanup || { log_failed "Failed to cleanup."; return 1; }
 
     log_ok "Done."
@@ -70,15 +71,6 @@ check_required_commands_exist() {
 
 declare_variables() {
     log_info "Declaring variables..."
-
-    if get_grub_themes_dir >/dev/null 2>&1; then
-        GRUB_THEMES_DIR="$(get_grub_themes_dir)"
-    else
-        log_error "Failed to get GRUB themes directory."
-        return 1
-    fi
-
-    GRUB_THEME_DIR="$GRUB_THEMES_DIR/$APP_NAME_LOWER"
 
     parse_grub_geometry "$CIRCULAR_PROGRESS_WIDTH" "$SCREEN_WIDTH" >/dev/null \
         && PARSED_CIRCULAR_PROGRESS_WIDTH="$(parse_grub_geometry "$CIRCULAR_PROGRESS_WIDTH" "$SCREEN_WIDTH")" || return 1
@@ -186,14 +178,14 @@ copy_assets_to_theme_dir() {
     [[ -d "$GRUB_THEME_DIR" ]] && sudo rm -rf "$GRUB_THEME_DIR" || true
     sudo mkdir -p "$GRUB_THEME_DIR"
 
-    sudo cp "$TEMP_DIR/theme.txt" "$GRUB_THEME_DIR"/
-    sudo cp "$TEMP_DIR/background.png" "$GRUB_THEME_DIR"/
-    sudo cp "$TEMP_DIR"/select_*.png "$GRUB_THEME_DIR"/
-    sudo cp "$TEMP_DIR"/center.png "$GRUB_THEME_DIR"/
-    sudo cp "$TEMP_DIR"/tick.png "$GRUB_THEME_DIR"/
-    sudo cp "$TEMP_DIR"/image.png "$GRUB_THEME_DIR"/
-    sudo cp -r "$TEMP_DIR/icons" "$GRUB_THEME_DIR"/
-    sudo cp "$TEMP_DIR/fonts"/*.pf2 "$GRUB_THEME_DIR"/ || true
+    sudo cp "$TEMP_DIR/theme.txt" "$GRUB_THEME_DIR"/ || return 1
+    sudo cp "$TEMP_DIR/background.png" "$GRUB_THEME_DIR"/ || return 1
+    sudo cp "$TEMP_DIR"/select_*.png "$GRUB_THEME_DIR"/ || return 1
+    [[ -f "$TEMP_DIR"/center.png ]] && { sudo cp "$TEMP_DIR"/center.png "$GRUB_THEME_DIR"/ || return 1; } || true
+    [[ -f "$TEMP_DIR"/tick.png ]] && { sudo cp "$TEMP_DIR"/tick.png "$GRUB_THEME_DIR"/ || return 1; } || true
+    [[ -f "$TEMP_DIR"/image.png ]] && { sudo cp "$TEMP_DIR"/image.png "$GRUB_THEME_DIR"/ || return 1; } || true
+    sudo cp -r "$TEMP_DIR/icons" "$GRUB_THEME_DIR"/ || return 1
+    sudo cp "$TEMP_DIR/fonts"/*.pf2 "$GRUB_THEME_DIR"/ || return 1
 
     [[ "$VERBOSE" == "yes" ]] && log_ok "Copied assets to theme directory successfully." || true
 }
@@ -225,6 +217,12 @@ update_grub_configuration() {
     update_grub_config >/dev/null 2>&1 || return 1
 
     [[ "$VERBOSE" == "yes" ]] && log_ok "Updated GRUB configuration successfully." || true
+}
+
+call_module_menu_valign_center() {
+    if [[ "$MENU_VALIGN_CENTER" == "yes" ]]; then
+        source "$APP_MODULES_DIR/menu-valign-center.sh" || return 1
+    fi
 }
 
 cleanup() {
