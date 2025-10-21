@@ -61,6 +61,7 @@ set_default_config_values() {
     log_info "Setting default config values..."
 
     [ -z "$CONTAINER_COLOR" ] && CONTAINER_COLOR="$THEME_BACKGROUND_COLOR" || true
+    [[ "$BACKGROUND_TYPE" == "file" && -z "$BACKGROUND_FILE" ]] && BACKGROUND_FILE="$APP_DATA_DIR/background.jpg" || true
 
     [[ "$VERBOSE" == "yes" ]] && log_ok "Set default config values successfully." || true
 }
@@ -84,13 +85,12 @@ parse_config_values() {
 }
 
 download_background_image_if_not_set() {
-    mkdir -p "$TEMP_DIR"
-
-    if [[ "$BACKGROUND_TYPE" == "file" && -z "$BACKGROUND_FILE" ]]; then
+    if [[ "$BACKGROUND_FILE" == "$APP_DATA_DIR/background.jpg" && ! -f "$BACKGROUND_FILE" ]]; then
         log_info "Downloading background image..."
 
         local url="https://raw.githubusercontent.com/lshung/grubify-assets/master/background.jpg"
-        BACKGROUND_FILE="$TEMP_DIR/background.jpg"
+
+        mkdir -p "$APP_DATA_DIR"
         download_with_retry "$url" "$BACKGROUND_FILE" || return 1
 
         [[ "$VERBOSE" == "yes" ]] && log_ok "Downloaded background image successfully." || true
@@ -98,7 +98,14 @@ download_background_image_if_not_set() {
 }
 
 generate_background_image() {
+    if [[ "$BACKGROUND_TYPE" == "file" && ! -f "$BACKGROUND_FILE" ]]; then
+        log_error "Background file '$BACKGROUND_FILE' does not exist."
+        return 1
+    fi
+
     log_info "Generating background image..."
+
+    mkdir -p "$TEMP_DIR"
 
     if [[ "$BACKGROUND_TYPE" == "file" ]]; then
         fit_background_image_to_screen || return 1
