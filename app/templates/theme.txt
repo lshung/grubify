@@ -44,7 +44,6 @@ terminal-border: "0"
   height = $PROGRESS_BAR_HEIGHT
   left = $PROGRESS_BAR_LEFT
   top = $PROGRESS_BAR_TOP
-  align = "$PROGRESS_BAR_ALIGN"
   fg_color = "$PROGRESS_BAR_FOREGROUND_COLOR"
   bg_color = "$PROGRESS_BAR_BACKGROUND_COLOR"
   border_color = "$PROGRESS_BAR_BACKGROUND_COLOR"
